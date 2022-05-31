@@ -8,6 +8,5 @@ ZHL向develop分支提交了修改后的test.txt文件，用作测试。
 “张开严向develop分支提交了修改后的test.txt文件，用作测试。”
 --干的不错！     -AlexHoring
 
-“谭论向develop分支提交了修改后的test.txt文件，用作测试。”
-
+“谭论向develop分支提交了修改后的test.txt文件，用作测试，无聊。”
 
