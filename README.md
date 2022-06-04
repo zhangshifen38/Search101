@@ -15,7 +15,8 @@
 
 #### 使用说明
 
-没有说明
+由于我给cmake-build-debug文件夹添加了.gitignore，而生成的exe文件在这个文件夹里，这就导致了news.csv文件无法正确使用。
+需要手动将其复制到你的cmake-build-debug文件夹下。
 
 #### 参与贡献
 
