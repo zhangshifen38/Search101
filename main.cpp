@@ -22,13 +22,14 @@ int main() {
     test.push_back("http://en.people.cn/n3/2022/0524/c90000-10100455.html4");
     test.push_back("Govt takes steps to get economy back on track");
     test.push_back("ABCDEFE FAFAFEAFAFSAFEAFAFEAF");
+    test.push_back("");
     test.push_back("http://en.people.cn/n3/2022/0524/c90000-10100455.html5");
     test.push_back("Govt takes steps to get economy back on track");
     test.push_back("ABCDEFE FAFAFEAFAFSAFEAFAFEAF");
     test.push_back("http://en.people.cn/n3/2022/0524/c90000-10100455.html6");
     test.push_back("Govt takes steps to get economy back on track");
     test.push_back("ABCDEFE FAFAFEAFAFSAFEAFAFEAF");
-    test2.readAndStrore(test,test1);
+    Algos::read_and_store(test, test1);
     for(auto item:test1){
         item.print();
     }

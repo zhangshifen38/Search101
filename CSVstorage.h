@@ -17,22 +17,23 @@ using  namespace  std;
  */
 class CSVstorage {
 public:
-    CSVstorage();
+    CSVstorage()=default;
     /**
-     * @author Hz
-     * @brief  list容器ListToDo依次存放有网页URL（一行），网页标题（一行），网页内容（n行），分别将这三个内容存放进csvStorageList中的每个CSVstorage
-     * @param listToDo:装有string的list容器，每个string是空串，或者连续是URL,标题，内容
-     * @param csvStorageList:装有CSVstorage的list容器
+     * @author AlexHoring
+     * @brief 带参构造函数
+     * @param url :网页项目的URL
+     * @param head :网页项目的标题
+     * @param content :网页项目的内容
      */
-    void readAndStrore(std::list<string>listToDo,std::list<CSVstorage> &csvStorageList);
+    CSVstorage(string &url, string &head, string &content);
     /**
-     * @author Hz
-     * @brief  工具，查找str字符串是否以prefix字符串开头
-     * @param str:被查找的字符串
-     * @param prefix:查找的开头
-     * @return
+     * @author AlexHoring
+     * @brief 设置网页信息类的内容
+     * @param url :网页项目的URL
+     * @param head :网页项目的标题
+     * @param content :网页项目的内容
      */
-    bool startsWith(std::string &str, const std::string &prefix) ;
+    void set_item(string url,string head,string content);
     /**
      * @author Hz
      * @brief 测试用，打印URL，标题和正文
