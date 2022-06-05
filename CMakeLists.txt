@@ -3,4 +3,4 @@ project(search101)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(search101 main.cpp CSVreader.cpp CSVreader.h Algos.cpp Algos.h)
+add_executable(search101 main.cpp CSVreader.cpp CSVreader.h Algos.cpp Algos.h CSVstorage.cpp CSVstorage.h)
