@@ -10,6 +10,7 @@ template <
         typename _Container = std::vector<_Type>>
 
 template <typename _RandomAccessIterator, typename _Cmp>
+
 static void BinaryHeap::MakeHeap(_RandomAccessIterator begin, _RandomAccessIterator end, _Cmp comp = _Compare())
 {
     _RandomAccessIterator flag;

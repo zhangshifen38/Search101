@@ -2,6 +2,7 @@
 #include "Algos.h"
 #include "CSVreader.h"
 #include "CSVstorage.h"
+#include "BinaryHeap.h"
 using namespace std;
 
 int main() {
