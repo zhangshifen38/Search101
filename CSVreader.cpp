@@ -6,7 +6,7 @@
 
 CSVreader::CSVreader(string &&path) {
     fileIn.open(path, ios::in);
-    state = 0;
+    state = READIN;
     isBufferFull = false;
 }
 
@@ -47,26 +47,28 @@ char CSVreader::get_char() {
 string CSVreader::get_sentense() {
     char in;
     string ret = "";
-    state = 0;
+    state = READIN;
     in = get_char();
     if (in == '\"' && (isBufferFull || readBuffer == '\x0a')) {
-        state = 2;
+        state = BLOCK;
     } else if (in == ',') {
-        state = 3;
+        state = READEND;
     } else {
-        ret += in;
-        state = 1;
+        if(in!='\n') {
+            ret += in;
+        }
+        state = LINE;
     }
-    while (state != 3) {
+    while (state != READEND) {
         if (end_of_file()) {
-            state = 3;
+            state = READEND;
             ret = "";
         } else {
             in = get_char();
-            if (in == ',' && state == 1) {
-                state = 3;
-            } else if (in == '\"' && state == 2 && isBufferFull && readBuffer == ',') {
-                state = 3;
+            if (in == ',' && state == LINE) {
+                state = READEND;
+            } else if (in == '\"' && state == BLOCK && isBufferFull && readBuffer == ',') {
+                state = READEND;
                 get_char();
             } else {
                 ret += in;

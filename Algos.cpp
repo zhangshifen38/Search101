@@ -4,11 +4,11 @@
 
 #include "Algos.h"
 
-void Algos::sample_function(string sentense) {
-    std::cout << "Sample sentense: " << sentense << std::endl;
+void Algos::sample_function(string sentence) {
+    std::cout << "Sample sentence: " << sentence << std::endl;
 }
 
-void Algos::read_and_store(std::list<string> &listToDo, std::list<CSVstorage> &csvStorageList) {
+void Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList) {
     string URL,head,content;
     int count = 0;//用来标志当前录入字符串是URL（3）还是标题（2）还是正文（1）
     std::string http = "http";
@@ -28,7 +28,7 @@ void Algos::read_and_store(std::list<string> &listToDo, std::list<CSVstorage> &c
             case 1:
                 content = item;
                 count--;
-                csvStorageList.push_back(CSVstorage(URL,head,content));
+                csvStorageList.emplace_back(CSVstorage(URL,head,content));
         }
     }
 }
