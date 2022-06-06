@@ -7,6 +7,8 @@
 
 //需要的头文件在这里补充
 #include <iostream>
+#include <list>
+#include <vector>
 #include "CSVstorage.h"
 using namespace std;
 /**
@@ -18,17 +20,17 @@ public:
     /**
      * @author AlexHoring
      * @brief 功能函数的编写示例：函数名前加static表静态，这里是定义，对应.cpp中写明实现。
-     * @param sentense:示例函数的输出
+     * @param sentence:示例函数的输出
      * @return none，可省略
      */
-    static void sample_function(string sentense);
+    static void sample_function(string sentence);
     /**
      * @author Hz
      * @brief  list容器ListToDo依次存放有网页URL（一行），网页标题（一行），网页内容（n行），分别将这三个内容存放进csvStorageList中的每个CSVstorage
      * @param listToDo:装有string的list容器，每个string是空串，或者连续是URL,标题，内容
      * @param csvStorageList:装有CSVstorage的list容器
      */
-    static void read_and_store(std::list<string> &listToDo, std::list<CSVstorage> &csvStorageList);
+    static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList);
 private:
     /**
      * @author Hz

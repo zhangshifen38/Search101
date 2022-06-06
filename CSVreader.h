@@ -10,6 +10,10 @@
 #include <iostream>
 using namespace std;
 
+enum ReaderState{
+    READIN,LINE,BLOCK,READEND
+};
+
 /**
  * @author AlexHoring
  * @brief 以分隔块为单位读取指定CSV文件的内容
@@ -22,12 +26,14 @@ public:
      * @param path：待读取CSV文件的路径
      */
     CSVreader(string&& path);
+
     /**
      * @author AlexHoring
      * @brief 判断文件是否读完
      * @return true假如文件已经读完，反之false
      */
     bool end_of_file();
+
     /**
      * @author AlexHoring
      * @brief 每次调用，获取一个分隔块的内容
@@ -36,9 +42,10 @@ public:
     string get_sentense();
 private:
     ifstream fileIn;
-    int state;
+    ReaderState state;
     char readBuffer;
     bool isBufferFull;
+
     /**
      * @author AlexHoring
      * @brief 每次调用时，返回文件中的下一个字符，对CSV文件的读取操作以分割块为单位，因此单个字符读取函数不公开

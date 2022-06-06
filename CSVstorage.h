@@ -39,7 +39,6 @@ public:
      * @brief 测试用，打印URL，标题和正文
      */
     void print();
-private:
     string URL;     //网页URL
     string head;    //网页标题
     string content; //网页正文
