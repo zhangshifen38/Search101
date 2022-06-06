@@ -34,7 +34,7 @@ template <
       * @param 接受队列内容类型的头，尾
       */
      template <typename _RandomAccessIterator, typename _Cmp>
-     static void MakeHeap(_RandomAccessIterator begin, _RandomAccessIterator end, _Cmp comp = _Compare())
+     static void make_heap(_RandomAccessIterator begin, _RandomAccessIterator end, _Cmp comp = _Compare())
      {
          _RandomAccessIterator flag;
          size_t i;
@@ -54,7 +54,7 @@ template <
                 const _Compare &cp = _Compare())
              : container(c), compare(cp)
      {
-         MakeHeap(container.begin(), container.end(), compare);
+         make_heap(container.begin(), container.end(), compare);
      }
 
 	 /**
@@ -70,7 +70,7 @@ template <
              : container(c), compare(cp)
      {
          container.assign(begin, end);
-         MakeHeap(container.begin(), container.end(), compare);
+         make_heap(container.begin(), container.end(), compare);
      }
 
      /**
