@@ -17,12 +17,12 @@ const short LEFT_HIGHER = 1;
  * @brief 平衡树的节点定义
  * @tparam _Type 存储的数据类型
  */
-template<typename _Type>
+template<typename Type>
 class AVLnodeEntity {
 public:
-    _Type data;
+    Type data;
 
-    AVLnodeEntity(_Type &dat = _Type());
+    AVLnodeEntity(Type &dat = Type());
 
     ~AVLnodeEntity();
 
@@ -37,8 +37,8 @@ private:
 
 };
 //将其指针类型定义为node，因为其最常被使用
-template<typename _Type>
-using AVLnode = AVLnodeEntity<_Type> *;
+template<typename Type>
+using AVLnode = AVLnodeEntity<Type> *;
 
 /**
  * @author AlexHoring
@@ -46,11 +46,11 @@ using AVLnode = AVLnodeEntity<_Type> *;
  * @tparam _Type 平衡树元素的类型
  * @tparam _Compare 平衡树的比较仿函数类型
  */
-template<typename _Type, typename _Compare=std::less<_Type> >
+template<typename Type, typename Compare=std::less<Type> >
 class AVLtree {
 public:
-    using AVLnodeType = AVLnode<_Type>;
-    AVLtree(_Compare compare = _Compare());
+    using AVLnodeType = AVLnode<Type>;
+    AVLtree(Compare compare = Compare());
 
     ~AVLtree();
 
@@ -59,7 +59,7 @@ public:
      * @brief 向平衡二叉树中插入一个元素
      * @param element 要插入的元素
      */
-    void insert(_Type element);
+    void insert(Type element);
 
     /**
      * @author AlexHoring
@@ -68,7 +68,7 @@ public:
      * @return 查找成功返回指向该节点的指针，否则返回nullptr
      * @todo 待完善
      */
-    AVLnodeType find(_Type toSearch);
+    AVLnodeType find(Type toSearch);
 
     /**
      * @author AlexHoring
@@ -79,8 +79,8 @@ public:
     void erase(AVLnodeType deleteNode);
 
 private:
-    AVLnode<_Type> root;
-    _Compare compare;
+    AVLnode<Type> root;
+    Compare compare;
     size_t nodeNumber;
 
     /**
@@ -119,53 +119,53 @@ private:
      * @param taller 子树高度是否增加的判断变量
      * @return 插入成功与否
      */
-    bool insert_element(AVLnodeType &treeRoot, _Type &element, bool &taller);
+    bool insert_element(AVLnodeType &treeRoot, Type &element, bool &taller);
 };
 
-template<typename _Type>
-AVLnodeEntity<_Type>::AVLnodeEntity(_Type &dat) {
+template<typename Type>
+AVLnodeEntity<Type>::AVLnodeEntity(Type &dat) {
     this->data = dat;
     balanceFactor = EQUAL_HEIGHT;
     leftChild = rightChild = nullptr;
 }
 
-template<typename _Type>
-AVLnodeEntity<_Type>::~AVLnodeEntity() {
+template<typename Type>
+AVLnodeEntity<Type>::~AVLnodeEntity() {
     delete this->leftChild;
     delete this->rightChild;
 }
 
-template<typename _Type, typename _Compare>
-AVLtree<_Type, _Compare>::AVLtree(_Compare compare) {
+template<typename Type, typename Compare>
+AVLtree<Type, Compare>::AVLtree(Compare compare) {
     this->root = nullptr;
     this->compare = compare;
     this->nodeNumber = 0;
 }
 
-template<typename _Type, typename _Compare>
-AVLtree<_Type, _Compare>::~AVLtree() {
+template<typename Type, typename Compare>
+AVLtree<Type, Compare>::~AVLtree() {
     delete this->root;
 }
 
-template<typename _Type, typename _Compare>
-void AVLtree<_Type, _Compare>::rotate_right(AVLnodeType &node) {
-    AVLnode<_Type> t = node->leftChild;
+template<typename Type, typename Compare>
+void AVLtree<Type, Compare>::rotate_right(AVLnodeType &node) {
+    AVLnode<Type> t = node->leftChild;
     node->leftChild = t->rightChild;
     t->rightChild = node;
     node = t;
 }
 
-template<typename _Type, typename _Compare>
-void AVLtree<_Type, _Compare>::rotate_left(AVLnodeType &node) {
-    AVLnode<_Type> t = node->rightChild;
+template<typename Type, typename Compare>
+void AVLtree<Type, Compare>::rotate_left(AVLnodeType &node) {
+    AVLnode<Type> t = node->rightChild;
     node->rightChild = t->leftChild;
     t->leftChild = node;
     node = t;
 }
 
-template<typename _Type, typename _Compare>
-void AVLtree<_Type, _Compare>::balance_left(AVLnodeType &node) {
-    AVLnode<_Type> l, lr;
+template<typename Type, typename Compare>
+void AVLtree<Type, Compare>::balance_left(AVLnodeType &node) {
+    AVLnode<Type> l, lr;
     l = node->leftChild;
     switch (l->balanceFactor) {
         case LEFT_HIGHER:
@@ -193,9 +193,9 @@ void AVLtree<_Type, _Compare>::balance_left(AVLnodeType &node) {
     }
 }
 
-template<typename _Type, typename _Compare>
-void AVLtree<_Type, _Compare>::balance_right(AVLnodeType &node) {
-    AVLnode<_Type> r, rl;
+template<typename Type, typename Compare>
+void AVLtree<Type, Compare>::balance_right(AVLnodeType &node) {
+    AVLnode<Type> r, rl;
     r = node->rightChild;
     switch (r->balanceFactor) {
         case RIGHT_HIGHER :
@@ -223,10 +223,10 @@ void AVLtree<_Type, _Compare>::balance_right(AVLnodeType &node) {
     }
 }
 
-template<typename _Type, typename _Compare>
-bool AVLtree<_Type, _Compare>::insert_element(AVLnodeType &treeRoot, _Type &element, bool &taller) {
+template<typename Type, typename Compare>
+bool AVLtree<Type, Compare>::insert_element(AVLnodeType &treeRoot, Type &element, bool &taller) {
     if (treeRoot == nullptr) {
-        treeRoot = new AVLnodeEntity<_Type>(element);
+        treeRoot = new AVLnodeEntity<Type>(element);
         taller = true;
     } else {
         //不大于并且不小于，就是相等
@@ -278,8 +278,8 @@ bool AVLtree<_Type, _Compare>::insert_element(AVLnodeType &treeRoot, _Type &elem
     return true;
 }
 
-template<typename _Type, typename _Compare>
-void AVLtree<_Type, _Compare>::insert(_Type element) {
+template<typename Type, typename Compare>
+void AVLtree<Type, Compare>::insert(Type element) {
     bool taller;
     if (insert_element(this->root, element, taller)) {
         this->nodeNumber++;
