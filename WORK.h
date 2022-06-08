@@ -12,10 +12,11 @@
 #include "CSVstorage.h"
 #include "Algos.h"
 #include "WordFilter.h"
+#include "SetAVL.h"
 //will be removed later
 #include <algorithm>
 #include <map>
-#include <set>
+
 using namespace std;
 
 /**
