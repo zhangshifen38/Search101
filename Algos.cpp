@@ -3,6 +3,7 @@
 //
 
 #include "Algos.h"
+#include "BinaryHeap.h"
 
 void Algos::sample_function(string sentence) {
     std::cout << "Sample sentence: " << sentence << std::endl;
@@ -36,3 +37,5 @@ void Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> 
 bool Algos::start_with(string &str, const string &prefix) {
     return str.size() >= prefix.size() && str.compare(0, prefix.size(), prefix) == 0;
 }
+
+
