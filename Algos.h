@@ -9,12 +9,15 @@
 #include <iostream>
 #include <list>
 #include <vector>
+#include <functional>
 #include "CSVstorage.h"
+
 using namespace std;
 /**
  * @author AlexHoring
  * @brief 所有的功能函数都在这里编写
  */
+
 class Algos {
 public:
     /**
@@ -31,6 +34,115 @@ public:
      * @param csvStorageList:装有CSVstorage的list容器
      */
     static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList);
+    /**
+     * @author TL
+     * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
+     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，makeGreaterSort为一个自定义的重构排序函数
+     * @return none
+     */
+    template<class _iterator>
+    void heap_sort(_iterator begin,_iterator end){
+        build_heap(begin,end);
+        for(auto it = end - 1;it >= begin;it--){
+            swap(*it ,*begin);
+            Algos::heap_realign(begin,it,begin);
+        }
+    }
+    /**
+     * @author TL
+     * @brief  build_heap实现构造大根堆，没有返回值。
+     * @param begin 是传入的开始迭代器，end是传入时的迭代器
+     */
+    template<class _iterator>
+    void build_heap(_iterator begin,_iterator end){
+        int lastNode = end - begin - 1;
+        int parent = (lastNode - 1)/2;
+        auto tempBegin = begin + parent;
+        for( ;tempBegin >= begin;tempBegin--){
+            heap_realign(begin,end,tempBegin);
+        }
+    }
+    /**
+     * @author TL
+     * @brief  heap_realign重新构造剩余的大根堆，没有返回值。
+     * @param begin 是传入的开始迭代器，end是传入时的迭代器
+     */
+    template<class _iterator>
+    void heap_realign(_iterator begin,_iterator end,_iterator parent){
+        if(parent >= end)
+            return;
+        int leftChild = (parent - begin)*2 + 1;
+        int rightChild = (parent - begin)*2 +2;
+        int max = parent - begin;
+        if((leftChild < (end - begin)) && (*(begin + leftChild) > *(begin + max))){
+            max = leftChild;
+        }
+        if((rightChild < (end - begin))&&(*(begin + rightChild) > *(begin + max))){
+            max = rightChild;
+        }
+        if(max != parent - begin){
+            swap(*(begin + max),*(parent));
+            heap_realign(begin,end,begin + max);
+        }
+    }
+
+    /**
+     * @author TL
+     * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
+     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，compare为一个自定义排序仿函数
+     * @return none
+     */
+    template<class _iterator,typename _Compare>
+    void heap_sort(_iterator begin,_iterator end,_Compare compare){
+        build_heap(begin,end,compare);
+        for(auto it = end - 1;it >= begin;it--){
+            swap(*it ,*begin);
+            Algos::heap_realign(begin,it,begin,compare);
+        }
+    }
+    /**
+     * @author TL
+     * @brief  build_heap建立一个堆，没有返回值。
+     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，compare为一个自定义排序仿函数
+     * @return none
+     */
+    template<class _iterator,typename _Compare>
+    void build_heap(_iterator begin,_iterator end,_Compare compare){
+        int lastNode = end - begin - 1;
+        int parent = (lastNode - 1)/2;
+        auto tempBegin = begin + parent;
+        for( ;tempBegin >= begin;tempBegin--){
+            heap_realign(begin,end,tempBegin,compare);
+        }
+    }
+    /**
+     * @author TL
+     * @brief  heap_realign实现堆的比较大小，没有返回值。
+     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，compare为一个自定义排序仿函数
+     * @return none
+     */
+    template<class _iterator,typename _Compare>
+    void heap_realign(_iterator begin,_iterator end,_iterator parent,_Compare compare){
+        if(parent >= end)
+            return;
+        int leftChild = (parent - begin)*2 + 1;
+        int rightChild = (parent - begin)*2 +2;
+        int max = parent - begin;
+        if((leftChild < (end - begin)) && compare((begin + max),(begin + leftChild))){
+            max = leftChild;
+        }
+        if((rightChild < (end - begin)) && compare((begin + max),(begin + rightChild))){
+            max = rightChild;
+        }
+        if(max != parent - begin){
+            swap(*(begin + max),*(parent));
+            heap_realign(begin,end,begin + max,compare);
+        }
+    }
+
+
+
+
 private:
     /**
      * @author Hz
@@ -40,7 +152,31 @@ private:
      * @return
      */
     static bool start_with(std::string &str, const std::string &prefix) ;
+
 };
 
-
+/**
+     * @author TL
+     * @brief  lessCompare定义一个小于号的仿函数，
+     * @param 重构括号，括号里的第一个first为比较的第一个迭代器，第二个second为比较的第二个迭代器
+     */
+class lessCompare {
+public:
+    template<typename _iterator>
+    bool operator()(_iterator first, _iterator second) {
+        return *(first) < *(second);
+    }
+};
+/**
+     * @author TL
+     * @brief  lessCompare定义一个大于号的仿函数，
+     * @param 重构括号，括号里的第一个first为比较的第一个迭代器，第二个second为比较的第二个迭代器
+     */
+class greaterCompare {
+public:
+    template<typename _iterator>
+    bool operator()(_iterator first, _iterator second) {
+        return *(first) > *(second);
+    }
+};
 #endif //SEARCH101_ALGOS_H
