@@ -20,6 +20,17 @@ int main() {
     av.insert(6);
     av.insert(7);
     av.print();
+
+    for(auto it=av.begin();it!=av.end();++it){
+        cout<<(*it)<<endl;
+    }
+    auto a=av.end();
+    --a;
+    auto b=av.begin();
+    --b;
+    for(;a!=b;--a){
+        cout<<(*a)<<endl;
+    }
     //调试模块的时候将下面的语句注释掉，将最后一句注释取消。调试功能逻辑的时候反之。
     //return WORK::SEARCH();
     return 0;
