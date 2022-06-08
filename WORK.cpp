@@ -52,7 +52,7 @@ int WORK::SEARCH() {
     cout<<"Type what you want to search:"<<flush;
     string search;
     getline(cin,search);
-    set<size_t> finds;
+    SetAVL<size_t> finds;
     filter.set_sentence(std::move(search));
     while(!filter.end_of_sentence()){   //对用户的输入进行分词
         search=filter.get_word();

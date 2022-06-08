@@ -135,32 +135,38 @@ public:
     using AVLnodeType = AVLnode<Type>;
     using iterator = AVLnodeIterator<Type>;
 
-    AVLtree(Compare compare = Compare());
+    AVLtree();
 
     ~AVLtree();
 
-    /**
+    virtual /**
      * @author AlexHoring
      * @brief 获取指向首元素的迭代器
      * @return 首元素迭代器
      */
     iterator begin();
 
-    /**
+    virtual /**
      * @author AlexHoring
      * @brief 获取指向“尾元素下一位”的迭代器
      * @return “尾元素后一位”的迭代器
      */
     iterator end();
 
-    /**
+    virtual /**
      * @author AlexHoring
      * @brief 向平衡二叉树中插入一个元素
      * @param element 要插入的元素
      */
     void insert(Type element);
 
-    /**
+    virtual /**
+     * @author AlexHoring
+     * @brief 清除平衡二叉树的所有节点
+     */
+    void clear();
+
+    virtual /**
      * @author AlexHoring
      * @brief 在平衡二叉树中寻找指定元素
      * @param toSearch 待寻找的元素
@@ -169,12 +175,19 @@ public:
      */
     iterator find(Type toSearch);
 
-    /**
+    virtual /**
      * @author AlexHoring
      * @brief 删除指定节点
      * @param deleteLocale 要删除的节点的迭代器
      */
     void erase(iterator deleteLocale);
+
+    virtual /**
+     * @author AlexHoring
+     * @brief 返回元素的个数
+     * @return 元素个数
+     */
+    size_t size();
 
     //临时函数，将被删除
     void print() {
@@ -196,7 +209,7 @@ public:
         std::cout << std::endl;
     }
 
-private:
+protected:
     AVLnode<Type> root;
     Compare compare;
     size_t nodeNumber;
@@ -238,6 +251,7 @@ private:
      * @return 插入成功与否
      */
     bool insert_element(AVLnodeType father, AVLnodeType &treeRoot, Type &element, bool &taller);
+
     /**
      * @author AlexHoring
      * @brief 查找工作的真正实现者
@@ -247,8 +261,18 @@ private:
      */
     AVLnodeType find_element(AVLnodeType treeRoot, Type &element);
 
+    /**
+     * @author AlexHoring
+     * @brief 根节点左子树高度下降时的调整函数
+     * @param treeRoot 待调整子树根节点
+     */
     void down_left(AVLnodeType treeRoot);
 
+    /**
+     * @author AlexHoring
+     * @brief 根节点右子树高度下降时的调整函数
+     * @param treeRoot 待调整子树根节点
+     */
     void down_right(AVLnodeType treeRoot);
 };
 
@@ -346,9 +370,9 @@ bool AVLnodeIterator<Type>::operator!=(AVLnodeIterator<Type> a) {
 }
 
 template<typename Type, typename Compare>
-AVLtree<Type, Compare>::AVLtree(Compare compare) {
+AVLtree<Type, Compare>::AVLtree() {
     this->root = new AVLnodeEntity<Type>();
-    this->compare = compare;
+    this->compare = Compare();
     this->nodeNumber = 0;
 }
 
@@ -412,15 +436,15 @@ void AVLtree<Type, Compare>::balance_left(AVLnodeType &node) {
             rotate_right(node);
             break;
         case EQUAL_HEIGHT:
-            lr=l->rightChild;
-            node->leftChild=lr;
-            l->rightChild=node;
-            lr->father=node;
-            l->father=node->father;
-            node->father=l;
-            node->balanceFactor=LEFT_HIGHER;
-            l->balanceFactor=RIGHT_HIGHER;
-            node=l;
+            lr = l->rightChild;
+            node->leftChild = lr;
+            l->rightChild = node;
+            lr->father = node;
+            l->father = node->father;
+            node->father = l;
+            node->balanceFactor = LEFT_HIGHER;
+            l->balanceFactor = RIGHT_HIGHER;
+            node = l;
             break;
     }
 }
@@ -454,15 +478,15 @@ void AVLtree<Type, Compare>::balance_right(AVLnodeType &node) {
             rotate_left(node);
             break;
         case EQUAL_HEIGHT:
-            rl=r->leftChild;
-            node->rightChild=rl;
-            r->leftChild=node;
-            rl->father=node;
-            r->father=node->father;
-            node->father=r;
-            node->balanceFactor=RIGHT_HIGHER;
-            r->balanceFactor=LEFT_HIGHER;
-            node=r;
+            rl = r->leftChild;
+            node->rightChild = rl;
+            r->leftChild = node;
+            rl->father = node;
+            r->father = node->father;
+            node->father = r;
+            node->balanceFactor = RIGHT_HIGHER;
+            r->balanceFactor = LEFT_HIGHER;
+            node = r;
             break;
     }
 }
@@ -546,82 +570,84 @@ typename AVLtree<Type, Compare>::iterator AVLtree<Type, Compare>::end() {
 }
 
 template<typename Type, typename Compare>
-typename AVLtree<Type,Compare>::AVLnodeType AVLtree<Type, Compare>::find_element(AVLtree::AVLnodeType treeRoot, Type &element) {
-    if(treeRoot== nullptr){
+typename AVLtree<Type, Compare>::AVLnodeType
+AVLtree<Type, Compare>::find_element(AVLtree::AVLnodeType treeRoot, Type &element) {
+    if (treeRoot == nullptr) {
         return nullptr;
     }
-    if(compare(element,*(treeRoot->data))){
-        return find_element(treeRoot->leftChild,element);
-    }else if(compare(*(treeRoot->data),element)){
-        return find_element(treeRoot->rightChild,element);
-    }else{
+    if (compare(element, *(treeRoot->data))) {
+        return find_element(treeRoot->leftChild, element);
+    } else if (compare(*(treeRoot->data), element)) {
+        return find_element(treeRoot->rightChild, element);
+    } else {
         return treeRoot;
     }
 }
 
 template<typename Type, typename Compare>
-typename AVLtree<Type,Compare>::iterator AVLtree<Type, Compare>::find(Type toSearch) {
-    AVLnodeType findResult= find_element(this->root->leftChild,toSearch);
-    if(findResult== nullptr){
+typename AVLtree<Type, Compare>::iterator AVLtree<Type, Compare>::find(Type toSearch) {
+    AVLnodeType findResult = find_element(this->root->leftChild, toSearch);
+    if (findResult == nullptr) {
         return end();
-    }else{
+    } else {
         return iterator(findResult);
     }
 }
 
-template<typename Type,typename Compare>
+template<typename Type, typename Compare>
 void AVLtree<Type, Compare>::erase(iterator deleteLocale) {
-    if(deleteLocale.iterator== nullptr ||deleteLocale.iterator->father== nullptr){
+    if (deleteLocale.iterator == nullptr || deleteLocale.iterator->father == nullptr) {
         return;
     }
-    if(deleteLocale.iterator->leftChild== nullptr&&deleteLocale.iterator->rightChild== nullptr){
-        AVLnodeType father=deleteLocale.iterator->father;
-        bool isLeftChild=(father->leftChild==deleteLocale.iterator);
+    if (deleteLocale.iterator->leftChild == nullptr && deleteLocale.iterator->rightChild == nullptr) {
+        AVLnodeType father = deleteLocale.iterator->father;
+        bool isLeftChild = (father->leftChild == deleteLocale.iterator);
         delete deleteLocale.iterator;
-        deleteLocale.iterator= nullptr;
-        if(isLeftChild) {
+        deleteLocale.iterator = nullptr;
+        if (isLeftChild) {
             father->leftChild = nullptr;
             down_left(father);
-        } else{
-            father->rightChild= nullptr;
+        } else {
+            father->rightChild = nullptr;
             down_right(father);
         }
-    }else{
-        Type *type=deleteLocale.iterator->data;
-        iterator toDelete=deleteLocale;
+    } else {
+        Type *type = deleteLocale.iterator->data;
+        iterator toDelete = deleteLocale;
         ++toDelete;
-        if(toDelete.iterator->father== nullptr){
+        if (toDelete.iterator->father == nullptr) {
             --toDelete;
             --toDelete;
         }
-        deleteLocale.iterator->data=toDelete.iterator->data;
-        toDelete.iterator->data=type;
+        deleteLocale.iterator->data = toDelete.iterator->data;
+        toDelete.iterator->data = type;
         erase(toDelete);
     }
+    this->nodeNumber--;
 }
 
 template<typename Type, typename Compare>
 void AVLtree<Type, Compare>::down_left(AVLtree::AVLnodeType treeRoot) {
-    if(treeRoot->father== nullptr){
+    if (treeRoot->father == nullptr) {
         return;
     }
-    bool isLeftChild=(treeRoot->father->leftChild==treeRoot);
+    bool isLeftChild = (treeRoot->father->leftChild == treeRoot);
     switch (treeRoot->balanceFactor) {
         case LEFT_HIGHER:
-            treeRoot->balanceFactor=EQUAL_HEIGHT;
-            if(isLeftChild){
+            treeRoot->balanceFactor = EQUAL_HEIGHT;
+            if (isLeftChild) {
                 down_left(treeRoot->father);
-            }else{
+            } else {
                 down_right(treeRoot->father);
             }
             break;
         case EQUAL_HEIGHT:
-            treeRoot->balanceFactor=RIGHT_HIGHER;
+            treeRoot->balanceFactor = RIGHT_HIGHER;
             break;
         case RIGHT_HIGHER:
-            if(isLeftChild){
+            if (isLeftChild) {
                 balance_right(treeRoot->father->leftChild);
-            }else{
+            } else {
                 balance_right(treeRoot->father->rightChild);
             }
             break;
@@ -630,30 +656,42 @@ void AVLtree<Type, Compare>::down_left(AVLtree::AVLnodeType treeRoot) {
 
 template<typename Type, typename Compare>
 void AVLtree<Type, Compare>::down_right(AVLtree::AVLnodeType treeRoot) {
-    if(treeRoot->father== nullptr){
+    if (treeRoot->father == nullptr) {
         return;
     }
-    bool isLeftChild=(treeRoot->father->leftChild==treeRoot);
+    bool isLeftChild = (treeRoot->father->leftChild == treeRoot);
     switch (treeRoot->balanceFactor) {
         case RIGHT_HIGHER:
-            treeRoot->balanceFactor=EQUAL_HEIGHT;
-            if(isLeftChild){
+            treeRoot->balanceFactor = EQUAL_HEIGHT;
+            if (isLeftChild) {
                 down_left(treeRoot->father);
-            }else{
+            } else {
                 down_right(treeRoot->father);
             }
             break;
         case EQUAL_HEIGHT:
-            treeRoot->balanceFactor=LEFT_HIGHER;
+            treeRoot->balanceFactor = LEFT_HIGHER;
             break;
         case LEFT_HIGHER:
-            if(isLeftChild){
+            if (isLeftChild) {
                 balance_left(treeRoot->father->leftChild);
-            }else{
+            } else {
                 balance_left(treeRoot->father->rightChild);
             }
             break;
     }
+}
+
+template<typename Type,typename Compare>
+size_t AVLtree<Type, Compare>::size() {
+    return this->nodeNumber;
+}
+
+template<typename Type, typename Compare>
+void AVLtree<Type, Compare>::clear() {
+    delete this->root->leftChild;
+    this->root->leftChild= nullptr;
+    this->nodeNumber=0;
 }
 
 #endif //SEARCH101_AVLTREE_H
