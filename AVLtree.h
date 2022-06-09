@@ -66,7 +66,7 @@ public:
      * @brief 重载取内容运算符
      * @return 该迭代器指向的元素
      */
-    Type operator*();
+    Type& operator*();
 
     /**
      * @author AlexHoring
@@ -121,6 +121,7 @@ private:
     AVLnodeIterator(AVLnode<Type> it);
 
     AVLnode<Type> iterator;
+    Type rubbish;
 };
 
 /**
@@ -293,17 +294,19 @@ AVLnodeEntity<Type>::~AVLnodeEntity() {
 template<typename Type>
 AVLnodeIterator<Type>::AVLnodeIterator() {
     this->iterator = nullptr;
+    this->rubbish=Type();
 }
 
 template<typename Type>
 AVLnodeIterator<Type>::AVLnodeIterator(AVLnode<Type> it) {
     this->iterator = it;
+    this->rubbish=Type();
 }
 
 template<typename Type>
-Type AVLnodeIterator<Type>::operator*() {
+Type& AVLnodeIterator<Type>::operator*() {
     if (this->iterator == nullptr) {
-        return Type();
+        return rubbish;
     } else {
         return *(iterator->data);
     }

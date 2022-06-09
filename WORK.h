@@ -22,6 +22,7 @@
 #include<fstream>
 #include<vector>
 #include <utility>
+
 #define MAXIUM -1
 #define endSymbol -1	//归并段结束标志
 #define capacity 10000  //内存工作区可容纳的记录个数
