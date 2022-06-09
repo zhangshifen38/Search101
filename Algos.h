@@ -11,6 +11,7 @@
 #include <vector>
 #include <functional>
 #include "CSVstorage.h"
+#include "WordFilter.h"
 
 using namespace std;
 /**

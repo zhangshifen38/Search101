@@ -5,6 +5,7 @@
 #include "Algos.h"
 #include "BinaryHeap.h"
 
+
 void Algos::sample_function(string sentence) {
     std::cout << "Sample sentence: " << sentence << std::endl;
 }
@@ -27,7 +28,7 @@ void Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> 
                 count--;
                 break;
             case 1:
-                content = item;
+                content=item;
                 count--;
                 csvStorageList.emplace_back(CSVstorage(URL,head,content));
         }

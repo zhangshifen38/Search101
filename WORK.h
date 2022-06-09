@@ -8,6 +8,8 @@
 #include <iostream>
 #include <list>
 #include <utility>
+#include <fstream>
+#include <filesystem>
 #include "CSVreader.h"
 #include "CSVstorage.h"
 #include "Algos.h"
