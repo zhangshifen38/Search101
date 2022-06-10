@@ -24,8 +24,8 @@
 #include <utility>
 
 #define MAXIUM -1      //无穷大
-#define capacity 10000  //内存工作区可容纳的记录个数
-#define numOfData 1588528 //文件中的记录数量
+#define CAPACITY 10000  //内存工作区可容纳的记录个数
+#define NUM_Of_DATA 1588528 //文件中的记录数量
 using namespace std;
 
 typedef pair<int,int> KeyType;	//定义关键字类型为整形,first存单词ID，second存新闻编号
@@ -34,13 +34,13 @@ typedef struct{
     KeyType key; //关键字项
 }RedType;//数据记录项
 
-typedef int loserTree[capacity];//用于选取最小值的败者树的非终端节点，里面的值是某节点在工作区中的位置序号，ls[0]是胜者
+typedef int loserTree[CAPACITY];//用于选取最小值的败者树的非终端节点，里面的值是某节点在工作区中的位置序号，ls[0]是胜者
 
 typedef struct{
     RedType rec;//记录
     KeyType key;//关键字
     int mergeNum;//所属归并段的段号
-}RedNode,WorkArea[capacity];//数据节点和用于得到归并段的工作区
+}RedNode,WorkArea[CAPACITY];//数据节点和用于得到归并段的工作区
 
 /**
  * @author AlexHoring

@@ -5,7 +5,7 @@
 #include "WORK.h"
 
 void WORK::SelectMinMax(loserTree &ls, WorkArea &wa, int q) {
-        for(int t=(capacity+q)/2,p=ls[t];t>0;t=t/2,p=ls[t]){//t为新加入节点的双亲节点的位置
+        for(int t=(CAPACITY+q)/2,p=ls[t];t>0;t=t/2,p=ls[t]){//t为新加入节点的双亲节点的位置
             if(wa[p].mergeNum<wa[q].mergeNum||(wa[p].mergeNum==wa[q].mergeNum)&&(wa[p].key.first)<wa[q].key.first){
                 int temp=q;
                 q=ls[t];//q始终存放胜者的位置
@@ -16,11 +16,11 @@ void WORK::SelectMinMax(loserTree &ls, WorkArea &wa, int q) {
 }
 
 void WORK::ConstructLoserTree(loserTree &ls, WorkArea &wa, ifstream &fi) {
-    for(int i=0;i!=capacity;++i){
+    for(int i=0;i!=CAPACITY;++i){
         wa[i].key.first=wa[i].key.second=wa[i].mergeNum=ls[i]=0;//工作区,败者树初始化
     }
 
-    for(int i=capacity-1;i>=0;--i){//输入一个关键字
+    for(int i=CAPACITY-1;i>=0;--i){//输入一个关键字
         fi>>wa[i].key.first;
         fi>>wa[i].key.second;
         wa[i].mergeNum=1;//段号为1
@@ -29,13 +29,13 @@ void WORK::ConstructLoserTree(loserTree &ls, WorkArea &wa, ifstream &fi) {
 }
 
 void WORK::GetMergeSection(loserTree &ls, WorkArea &wa, ifstream &fi, int &counts, int rc, int &rmax,ofstream &fo) {
-    int tmpKey;
     while(wa[ls[0]].mergeNum==rc){//同属于一个段，不需要切换到下一个段
         int q=ls[0];//q是选出的minimax在工作区中的位置编号
         KeyType minimax=wa[q].key;
         fo<<minimax.first<<"\t\t"<<minimax.second<<endl;		//将筛选出的一个数据记录输出
         ++counts;
-        if(counts>=numOfData){wa[q].mergeNum=rmax+1;wa[q].key.first=wa[q].key.second=-1;}//文件全部读取完之后，则只需要处理败者树中剩余未输出的元素
+        if(counts>=NUM_Of_DATA){wa[q].mergeNum=rmax+1;wa[q].key.first=wa[q].key.second=MAXIUM;}//文件全部读取完之后，则只需要处理败者树中剩余未输出的元素
+        //如果所有的数据记录都读取完，则没输出一个数据记录，就将该数据记录的段设置为虚段，表示结束，值设置为无限大
         else{
             fi>>wa[q].key.first>>wa[q].key.second; //提取下一个数据记录
             if(wa[q].key.first<minimax.first){  //如果小于上一个筛选出的数据记录，则它属于下一段
@@ -104,13 +104,13 @@ int WORK::SEARCH() {
     ConstructLoserTree(ls,wa,dataIn);//初建败者树
     int rc=1;//当前生成的初始化段的段号，
     int rmax=1;//败者树中最大的段号
-    int counts=capacity-1;
+    int counts=CAPACITY-1;
     while(rc<=rmax){//rc=rmax+1的时候标志输入文件的置换排序已经完成
         GetMergeSection(ls,wa,dataIn,counts,rc,rmax,out);//求得一个归并段
         count++;
         out.close();
         out.clear(ios::goodbit);
-        if(counts<numOfData+capacity-1){
+        if(counts<NUM_Of_DATA+CAPACITY-1){
             sprintf(str,"..\\initial\\data\\data%d.dat",count);
             out.open(str);
         }//防止生成多余的一个空文件
