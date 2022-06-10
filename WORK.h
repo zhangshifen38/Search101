@@ -23,8 +23,7 @@
 #include<vector>
 #include <utility>
 
-#define MAXIUM -1
-#define endSymbol -1	//归并段结束标志
+#define MAXIUM -1      //无穷大
 #define capacity 10000  //内存工作区可容纳的记录个数
 #define numOfData 1588528 //文件中的记录数量
 using namespace std;
@@ -35,7 +34,7 @@ typedef struct{
     KeyType key; //关键字项
 }RedType;//数据记录项
 
-typedef int loserTree[capacity];//用于选取最小值的败者树
+typedef int loserTree[capacity];//用于选取最小值的败者树的非终端节点，里面的值是某节点在工作区中的位置序号，ls[0]是胜者
 
 typedef struct{
     RedType rec;//记录

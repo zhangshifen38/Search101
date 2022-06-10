@@ -5,14 +5,14 @@
 #include "WORK.h"
 
 void WORK::SelectMinMax(loserTree &ls, WorkArea &wa, int q) {
-        for(int t=(capacity+q)/2,p=ls[t];t>0;t=t/2,p=ls[t]){
+        for(int t=(capacity+q)/2,p=ls[t];t>0;t=t/2,p=ls[t]){//t为新加入节点的双亲节点的位置
             if(wa[p].mergeNum<wa[q].mergeNum||(wa[p].mergeNum==wa[q].mergeNum)&&(wa[p].key.first)<wa[q].key.first){
                 int temp=q;
-                q=ls[t];
+                q=ls[t];//q始终存放胜者的位置
                 ls[t]=temp;
-            }
+            }//段号小的或者短号相等但是关键字小的为胜者
         }
-        ls[0]=q;
+        ls[0]=q;//ls[0]为最终胜者的位置，即最小值的位置
 }
 
 void WORK::ConstructLoserTree(loserTree &ls, WorkArea &wa, ifstream &fi) {
@@ -25,17 +25,17 @@ void WORK::ConstructLoserTree(loserTree &ls, WorkArea &wa, ifstream &fi) {
         fi>>wa[i].key.second;
         wa[i].mergeNum=1;//段号为1
        SelectMinMax(ls,wa,i);//调整败者树
-    }
+    }//输入capacity个记录到工作区，并调整败者树
 }
 
 void WORK::GetMergeSection(loserTree &ls, WorkArea &wa, ifstream &fi, int &counts, int rc, int &rmax,ofstream &fo) {
     int tmpKey;
     while(wa[ls[0]].mergeNum==rc){//同属于一个段，不需要切换到下一个段
-        int q=ls[0];
+        int q=ls[0];//q是选出的minimax在工作区中的位置编号
         KeyType minimax=wa[q].key;
-        fo<<minimax.first<<"\t\t"<<minimax.second<<endl;		//筛选出一个数据记录，输出
+        fo<<minimax.first<<"\t\t"<<minimax.second<<endl;		//将筛选出的一个数据记录输出
         ++counts;
-        if(counts>=numOfData){wa[q].mergeNum=rmax+1;wa[q].key.first=wa[q].key.second=-1;}//全部读取完之后，则只需要消化败者树中剩余未输出的元素
+        if(counts>=numOfData){wa[q].mergeNum=rmax+1;wa[q].key.first=wa[q].key.second=-1;}//文件全部读取完之后，则只需要处理败者树中剩余未输出的元素
         else{
             fi>>wa[q].key.first>>wa[q].key.second; //提取下一个数据记录
             if(wa[q].key.first<minimax.first){  //如果小于上一个筛选出的数据记录，则它属于下一段
@@ -96,7 +96,7 @@ int WORK::SEARCH() {
     filesystem::create_directory("../initial/data");     //创建存放归并段文件的文件夹
     ifstream dataIn("../initial/TemporaryIndex.dat");
     char str[20]="data%d.dat";
-    int count=1;
+    int count=1;//记录段号
     sprintf(str,"..\\initial\\data\\data%d.dat",count);
     ofstream out(str);
     WorkArea wa;
@@ -110,8 +110,10 @@ int WORK::SEARCH() {
         count++;
         out.close();
         out.clear(ios::goodbit);
-        sprintf(str,"..\\initial\\data\\data%d.dat",count);
-        out.open(str);
+        if(counts<numOfData+capacity-1){
+            sprintf(str,"..\\initial\\data\\data%d.dat",count);
+            out.open(str);
+        }//防止生成多余的一个空文件
         rc=wa[ls[0]].mergeNum;//设置下一个段的段号
     }
     //-------------------------------------------------------------置换选择排序生成归并段

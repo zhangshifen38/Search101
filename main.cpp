@@ -43,6 +43,6 @@ int main() {
     cout<<mp[3]<<endl;
     cout<<mp[5]<<endl;
     //调试模块的时候将下面的语句注释掉，将最后一句注释取消。调试功能逻辑的时候反之。
-    //return WORK::SEARCH();
+    return WORK::SEARCH();
     return 0;
 }
