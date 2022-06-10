@@ -4,7 +4,7 @@
 
 #include "CSVreader.h"
 
-CSVreader::CSVreader(string &&path) {
+CSVreader::CSVreader(const string &path) {
     fileIn.open(path, ios::in);
     state = READIN;
     isBufferFull = false;
@@ -24,9 +24,7 @@ char CSVreader::get_char() {
             if (readBuffer == '\x0d') {
                 readBuffer = fileIn.get();
             }
-            if (readBuffer != '\x0a') {
-                isBufferFull = true;
-            }
+            isBufferFull = true;
         }
     } else if (in == ',') {
         if (state == 2) {
@@ -48,13 +46,15 @@ string CSVreader::get_sentense() {
     char in;
     string ret = "";
     state = READIN;
-    in = get_char();
+    do{
+        in=get_char();
+    }while(isblank(in));
     if (in == '\"' && (isBufferFull || readBuffer == '\x0a')) {
         state = BLOCK;
     } else if (in == ',') {
         state = READEND;
     } else {
-        if(in!='\n') {
+        if (in != '\n') {
             ret += in;
         }
         state = LINE;
@@ -65,9 +65,11 @@ string CSVreader::get_sentense() {
             ret = "";
         } else {
             in = get_char();
-            if (in == ',' && state == LINE) {
+            if ((in == ','||in=='\x0a') && state == LINE) {
                 state = READEND;
-            } else if (in == '\"' && state == BLOCK && isBufferFull && readBuffer == ',') {
+            } else if (in == '\"' &&
+                       state == BLOCK &&
+                       (isBufferFull && (readBuffer == ',' || readBuffer == '\x0a'))) {
                 state = READEND;
                 get_char();
             } else {

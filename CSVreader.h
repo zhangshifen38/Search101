@@ -25,7 +25,7 @@ public:
      * @brief 类的构造函数
      * @param path：待读取CSV文件的路径
      */
-    CSVreader(string&& path);
+    CSVreader(const string& path);
 
     /**
      * @author AlexHoring

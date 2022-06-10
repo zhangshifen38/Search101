@@ -31,6 +31,7 @@ public:
     void insert(ElementType data);
     void clear();
     bool empty();
+    size_t size();
     iterator find(KeyType key);
     void erase(iterator deleteLocale);
     void swap(MapAVL<KeyType,ValueType,Compare> &mapAVL);
@@ -87,6 +88,11 @@ ValueType &MapAVL<KeyType, ValueType, Compare>::operator[](KeyType key) {
         tryToFind= find(key);
     }
     return (*tryToFind).second;
+}
+
+template<typename KeyType, typename ValueType, typename Compare>
+size_t MapAVL<KeyType, ValueType, Compare>::size() {
+    return this->nodeNumber;
 }
 
 
