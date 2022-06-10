@@ -45,7 +45,8 @@ void WORK::GetMergeSection(loserTree &ls, WorkArea &wa, ifstream &fi, int &count
     while(wa[ls[0]].mergeNum==rc){//同属于一个段，不需要切换到下一个段
         int q=ls[0];//q是选出的minimax在工作区中的位置编号
         KeyType minimax=wa[q].key;
-        fo<<minimax.first<<"\t\t"<<minimax.second<<endl;		//将筛选出的一个数据记录输出
+        fo<<endl;
+        fo<<minimax.first<<"\t\t"<<minimax.second;		//将筛选出的一个数据记录输出
         ++counts;
         if(counts>=NUM_Of_DATA){wa[q].mergeNum=rmax+1;wa[q].key.first=wa[q].key.second=MAXIUM;}//文件全部读取完之后，则只需要处理败者树中剩余未输出的元素
         //如果所有的数据记录都读取完，则没输出一个数据记录，就将该数据记录的段设置为虚段，表示结束，值设置为无限大
@@ -148,7 +149,7 @@ int WORK::SEARCH() {
         SelectMin(CMPArray,dataMess,i,count);
     }
     int countTotality=0;
-    while(countTotality<NUM_Of_DATA+count1) {
+    while(dataMess[CMPArray[0]].key.first!=99999) {
         int q = CMPArray[0];
         KeyType mini = dataMess[q].key;
         writeToFinalData << mini.first << "\t\t" << mini.second << endl;

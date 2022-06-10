@@ -90,7 +90,7 @@ public:
      */
     static void GetMergeSection(loserTree &ls,WorkArea &wa,ifstream &fi,int &counts,int rc,int &rmax,ofstream &fo);
     /**
-     * @author Trowood
+     * @author Hz
      * @param ls ,用于得到最小值的败者树
      * @param wa，工作区
      * @param q，指示要加入败者树的元素的位置
