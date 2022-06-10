@@ -68,43 +68,21 @@ int WORK::SEARCH() {
 
     list<string> listToDo;
     vector<CSVstorage> newsInfo;
-    CSVreader reader("../news.csv");
-    while(!reader.end_of_file()){
-        listToDo.push_back(reader.get_sentense());  //读取信息块
-    }
-    Algos::read_and_store(listToDo,newsInfo);   //存储新闻信息
+    CSVreader reader(NEWS_PATH);
+    MapAVL<string ,size_t> dict;
 
-    map<string ,int> dict;  //待替换
+    //读取CSV信息块
+    while(!reader.end_of_file()){
+        listToDo.push_back(reader.get_sentense());
+    }
+
+    //读取新闻信息，并且生成词典与临时索引文件TemporaryIndex.dat
+    Algos::read_and_store(listToDo, newsInfo, dict);
+
+
     vector< pair< size_t,size_t > > tempIndex;
     vector< pair< size_t ,vector<size_t> > > invIndex;
-    WordFilter filter;
 
-    ofstream writeToTempIndex;
-    //写入临时索引文件TemporaryIndex.dat
-    filesystem::create_directory("../initial");     //创建目录
-    writeToTempIndex.open("../initial/TemporaryIndex.dat",ios::out);    //打开文件
-    for(size_t i=0;i<newsInfo.size();++i){
-        filter.set_sentence(std::move(newsInfo[i].head));
-        while(!filter.end_of_sentence()){
-            string words=filter.get_word();
-            if(dict.find(words)==dict.end()){
-                dict.insert({words,dict.size()});
-            }
-            writeToTempIndex<<dict[words]<<"\t\t"<<i<<endl;
-            //tempIndex.emplace_back(dict[words],i);
-        }
-        filter.set_sentence(std::move(newsInfo[i].content));
-        while(!filter.end_of_sentence()){
-            string words=filter.get_word();
-            if(dict.find(words)==dict.end()){
-                dict.insert({words,dict.size()});
-            }
-            writeToTempIndex<<dict[words]<<"\t\t"<<i<<endl;
-            //tempIndex.emplace_back(dict[words],i);
-        }
-    }
-    writeToTempIndex.close();
-    //TODO 将临时索引按照首元素顺序排序，使用外部排序方法。
     //-------------------------------------------------------------置换选择排序生成归并段
     filesystem::create_directory("../initial/data");     //创建存放归并段文件的文件夹
     ifstream dataIn("../initial/TemporaryIndex.dat");

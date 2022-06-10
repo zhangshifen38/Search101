@@ -15,13 +15,16 @@
 #include "Algos.h"
 #include "WordFilter.h"
 #include "SetAVL.h"
-//will be removed later
-#include <algorithm>
-#include <map>
+#include "MapAVL.h"
 #include<iostream>
 #include<fstream>
 #include<vector>
 #include <utility>
+#include "ENTITY.h"
+//will be removed later
+#include <algorithm>
+#include <map>
+
 
 #define MAXIUM -1      //无穷大
 #define CAPACITY 10000  //内存工作区可容纳的记录个数
@@ -99,6 +102,5 @@ public:
     static void SelectMin(loserTree &ls,WorkAreaPlus &wa,int q,int count);
 
 };
-
 
 #endif //SEARCH101_WORK_H

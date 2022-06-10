@@ -7,11 +7,16 @@
 
 //需要的头文件在这里补充
 #include <iostream>
+#include <fstream>
 #include <list>
 #include <vector>
+#include <filesystem>
 #include <functional>
 #include "CSVstorage.h"
 #include "WordFilter.h"
+#include "MapAVL.h"
+#include "BinaryHeap.h"
+#include "ENTITY.h"
 
 using namespace std;
 /**
@@ -34,7 +39,13 @@ public:
      * @param listToDo:装有string的list容器，每个string是空串，或者连续是URL,标题，内容
      * @param csvStorageList:装有CSVstorage的list容器
      */
-    static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList);
+    static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
+                               MapAVL<std::string, size_t> &dictionary);
+
+    static void
+    write_to_temporary_index(ofstream &writeToTempIndex, MapAVL<std::string, size_t> &dict, std::string &head,
+                             std::string &content, size_t newsID);
+
     /**
      * @author TL
      * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
