@@ -30,6 +30,7 @@
 #define CAPACITY 10000  //内存工作区可容纳的记录个数
 #define NUM_Of_DATA 1588528 //文件中的记录数量
 #define numBound 99999 //文件中的记录数量
+
 using namespace std;
 
 typedef pair<int,int> KeyType;	//定义关键字类型为整形,first存单词ID，second存新闻编号
@@ -93,7 +94,7 @@ public:
      */
     static void GetMergeSection(loserTree &ls,WorkArea &wa,ifstream &fi,int &counts,int rc,int &rmax,ofstream &fo);
     /**
-     * @author Trowood
+     * @author Hz
      * @param ls ,用于得到最小值的败者树
      * @param wa，工作区
      * @param q，指示要加入败者树的元素的位置
