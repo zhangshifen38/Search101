@@ -5,7 +5,7 @@
 #include "WORK.h"
 
 void WORK::SelectMinMax(loserTree &ls, WorkArea &wa, int q) {
-        for(int t=(capacity+q)/2,p=ls[t];t>0;t=t/2,p=ls[t]){
+        for(int t=(CAPACITY+q)/2,p=ls[t];t>0;t=t/2,p=ls[t]){
             if(wa[p].mergeNum<wa[q].mergeNum||(wa[p].mergeNum==wa[q].mergeNum)&&(wa[p].key.first)<wa[q].key.first){
                 int temp=q;
                 q=ls[t];
@@ -16,11 +16,11 @@ void WORK::SelectMinMax(loserTree &ls, WorkArea &wa, int q) {
 }
 
 void WORK::ConstructLoserTree(loserTree &ls, WorkArea &wa, ifstream &fi) {
-    for(int i=0;i!=capacity;++i){
+    for(int i=0;i!=CAPACITY;++i){
         wa[i].key.first=wa[i].key.second=wa[i].mergeNum=ls[i]=0;//工作区,败者树初始化
     }
 
-    for(int i=capacity-1;i>=0;--i){//输入一个关键字
+    for(int i=CAPACITY-1;i>=0;--i){//输入一个关键字
         fi>>wa[i].key.first;
         fi>>wa[i].key.second;
         wa[i].mergeNum=1;//段号为1
@@ -55,43 +55,21 @@ int WORK::SEARCH() {
 
     list<string> listToDo;
     vector<CSVstorage> newsInfo;
-    CSVreader reader("../news.csv");
-    while(!reader.end_of_file()){
-        listToDo.push_back(reader.get_sentense());  //读取信息块
-    }
-    Algos::read_and_store(listToDo,newsInfo);   //存储新闻信息
+    CSVreader reader(NEWS_PATH);
+    MapAVL<string ,size_t> dict;
 
-    map<string ,int> dict;  //待替换
+    //读取CSV信息块
+    while(!reader.end_of_file()){
+        listToDo.push_back(reader.get_sentense());
+    }
+
+    //读取新闻信息，并且生成词典与临时索引文件TemporaryIndex.dat
+    Algos::read_and_store(listToDo, newsInfo, dict);
+
+
     vector< pair< size_t,size_t > > tempIndex;
     vector< pair< size_t ,vector<size_t> > > invIndex;
-    WordFilter filter;
 
-    ofstream writeToTempIndex;
-    //写入临时索引文件TemporaryIndex.dat
-    filesystem::create_directory("../initial");     //创建目录
-    writeToTempIndex.open("../initial/TemporaryIndex.dat",ios::out);    //打开文件
-    for(size_t i=0;i<newsInfo.size();++i){
-        filter.set_sentence(std::move(newsInfo[i].head));
-        while(!filter.end_of_sentence()){
-            string words=filter.get_word();
-            if(dict.find(words)==dict.end()){
-                dict.insert({words,dict.size()});
-            }
-            writeToTempIndex<<dict[words]<<"\t\t"<<i<<endl;
-            //tempIndex.emplace_back(dict[words],i);
-        }
-        filter.set_sentence(std::move(newsInfo[i].content));
-        while(!filter.end_of_sentence()){
-            string words=filter.get_word();
-            if(dict.find(words)==dict.end()){
-                dict.insert({words,dict.size()});
-            }
-            writeToTempIndex<<dict[words]<<"\t\t"<<i<<endl;
-            //tempIndex.emplace_back(dict[words],i);
-        }
-    }
-    writeToTempIndex.close();
-    //TODO 将临时索引按照首元素顺序排序，使用外部排序方法。
     //-------------------------------------------------------------置换选择排序生成归并段
     filesystem::create_directory("../initial/data");     //创建存放归并段文件的文件夹
     ifstream dataIn("../initial/TemporaryIndex.dat");
@@ -104,7 +82,7 @@ int WORK::SEARCH() {
     ConstructLoserTree(ls,wa,dataIn);//初建败者树
     int rc=1;//当前生成的初始化段的段号，
     int rmax=1;//败者树中最大的段号
-    int counts=capacity-1;
+    int counts=CAPACITY-1;
     while(rc<=rmax){//rc=rmax+1的时候标志输入文件的置换排序已经完成
         GetMergeSection(ls,wa,dataIn,counts,rc,rmax,out);//求得一个归并段
         count++;

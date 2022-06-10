@@ -15,17 +15,20 @@
 #include "Algos.h"
 #include "WordFilter.h"
 #include "SetAVL.h"
-//will be removed later
-#include <algorithm>
-#include <map>
+#include "MapAVL.h"
 #include<iostream>
 #include<fstream>
 #include<vector>
 #include <utility>
+#include "ENTITY.h"
+//will be removed later
+#include <algorithm>
+#include <map>
+
 
 #define MAXIUM -1
 #define endSymbol -1	//归并段结束标志
-#define capacity 10000  //内存工作区可容纳的记录个数
+#define CAPACITY 10000  //内存工作区可容纳的记录个数
 #define numOfData 1588528 //文件中的记录数量
 using namespace std;
 
@@ -35,13 +38,13 @@ typedef struct{
     KeyType key; //关键字项
 }RedType;//数据记录项
 
-typedef int loserTree[capacity];//用于选取最小值的败者树
+typedef int loserTree[CAPACITY];//用于选取最小值的败者树
 
 typedef struct{
     RedType rec;//记录
     KeyType key;//关键字
     int mergeNum;//所属归并段的段号
-}RedNode,WorkArea[capacity];//数据节点和用于得到归并段的工作区
+}RedNode,WorkArea[CAPACITY];//数据节点和用于得到归并段的工作区
 
 /**
  * @author AlexHoring
@@ -85,6 +88,5 @@ public:
     static void GetMergeSection(loserTree &ls,WorkArea &wa,ifstream &fi,int &counts,int rc,int &rmax,ofstream &fo);
 
 };
-
 
 #endif //SEARCH101_WORK_H
