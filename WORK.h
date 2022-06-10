@@ -30,6 +30,7 @@
 #define CAPACITY 10000  //内存工作区可容纳的记录个数
 #define NUM_Of_DATA 1588528 //文件中的记录数量
 #define numBound 99999 //文件中的记录数量
+
 using namespace std;
 
 typedef pair<int,int> KeyType;	//定义关键字类型为整形,first存单词ID，second存新闻编号
