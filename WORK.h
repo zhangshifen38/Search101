@@ -26,6 +26,7 @@
 #define MAXIUM -1      //无穷大
 #define CAPACITY 10000  //内存工作区可容纳的记录个数
 #define NUM_Of_DATA 1588528 //文件中的记录数量
+#define numBound 99999 //文件中的记录数量
 using namespace std;
 
 typedef pair<int,int> KeyType;	//定义关键字类型为整形,first存单词ID，second存新闻编号
@@ -41,6 +42,12 @@ typedef struct{
     KeyType key;//关键字
     int mergeNum;//所属归并段的段号
 }RedNode,WorkArea[CAPACITY];//数据节点和用于得到归并段的工作区
+
+typedef struct{
+    RedType rec;//记录
+    KeyType key;//关键字
+    ifstream filePoint;//所属归并段的文件号
+}WorkAreaPlus[CAPACITY];//数据节点和用于得到归并段的工作区
 
 /**
  * @author AlexHoring
@@ -82,6 +89,14 @@ public:
      * @brief 用于得到一个归并段
      */
     static void GetMergeSection(loserTree &ls,WorkArea &wa,ifstream &fi,int &counts,int rc,int &rmax,ofstream &fo);
+    /**
+     * @author Trowood
+     * @param ls ,用于得到最小值的败者树
+     * @param wa，工作区
+     * @param q，指示要加入败者树的元素的位置
+     * @brief 用于调整败者树，从wa[q]起到败者树的根比较选择MINI记录，最终ls[0]为最小元素在工作区中的的位置
+     */
+    static void SelectMin(loserTree &ls,WorkAreaPlus &wa,int q,int count);
 
 };
 
