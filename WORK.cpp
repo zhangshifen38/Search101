@@ -131,9 +131,9 @@ int WORK::SEARCH() {
     }
     for(int i=count1;i>0;i--) {
         sprintf(str1, "..\\initial\\data\\data%d.dat", i);
-        dataMess[i].filePoint.open(str1);
-        dataMess[i].filePoint>>dataMess[i].key.first>>dataMess[i].key.second;
-        SelectMin(CMPArray,dataMess,i,count);
+        dataMess[i-1].filePoint.open(str1);
+        dataMess[i-1].filePoint>>dataMess[i-1].key.first>>dataMess[i-1].key.second;
+        SelectMin(CMPArray,dataMess,i-1,count-1);
     }
     int countTotality=0;
     while(dataMess[CMPArray[0]].key.first!=99999) {
@@ -145,9 +145,9 @@ int WORK::SEARCH() {
         else {
             dataMess[q].filePoint >> dataMess[q].key.first >> dataMess[q].key.second; //提取下一个数据记录
         }
-        SelectMin(CMPArray,dataMess,q,count);
+        SelectMin(CMPArray,dataMess,q,count-1);
     }
-    for(int i=count-1;i>=1;i--) {
+    for(int i=count-2;i>=0;i--) {
         dataMess[i].filePoint.close();
     }
     writeToFinalData.close();
