@@ -35,25 +35,50 @@ public:
      */
     static void sample_function(string sentence);
     /**
-     * @author Hz
-     * @brief  list容器ListToDo依次存放有网页URL（一行），网页标题（一行），网页内容（n行），分别将这三个内容存放进csvStorageList中的每个CSVstorage
-     * @param listToDo:装有string的list容器，每个string是空串，或者连续是URL,标题，内容
+     * @authors Hz,AlexHoring
+     * @brief  list容器ListToDo依次存放有网页URL，网页标题，分别存放进csvStorageList中的每个CSVstorage,并创建临时索引与单词编号文件。
+     * @param listToDo:装有string的list容器，每个string是空串，或者连续是URL、标题、内容
      * @param csvStorageList:装有CSVstorage的list容器
+     * @param dictionary 查询单词是否出现的容器
+     * @param isChineseMode 是否中文模式的判断变量
      */
     static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
                                MapAVL<std::string, size_t> &dictionary, bool isChineseMode);
 
+    /**
+     * @author AlexHoring
+     * @brief 写入英文的未排序的临时索引文件与单词编号文件
+     * @param writeToTempIndex 指向临时索引文件的文件流
+     * @param writeToWordNumber 指向单词编号文件的文件流
+     * @param dict 记录单词是否出现的map对象
+     * @param head 网页标题
+     * @param content 网页正文
+     * @param newsID 新闻网页的编号
+     */
     static void
     write_to_file(ofstream &writeToTempIndex, ofstream &writeToWordNumber, MapAVL<std::string, size_t> &dict,
                   std::string &head, std::string &content, size_t newsID);
 
+    /**
+     * @author AlexHoring
+     * @brief 写入中文的未排序临时索引文件与单词编号文件
+     * @param filter Jieba分词工具的对象实例
+     * @param writeToTempIndex 指向临时索引文件的文件流
+     * @param writeToWordNumber 指向单词编号文件的文件流
+     * @param dict 记录单词是否出现的map对象
+     * @param head 网页标题
+     * @param content 网页正文
+     * @param newsID 新闻网页的编号
+     */
     static void write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex, ofstream &writeToWordNumber,
                                       MapAVL<std::string, size_t> &dict, string &head, string &content, size_t newsID);
 
     /**
      * @author TL
      * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
-     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，makeGreaterSort为一个自定义的重构排序函数
+     * @param begin 可以理解为头部迭代器。
+     * @param end 可以理解为尾部迭代器.
+     * @param makeGreaterSort 为一个自定义的重构排序函数
      * @return none
      */
     template<class _iterator>
