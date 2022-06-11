@@ -18,13 +18,13 @@
 #include "BinaryHeap.h"
 #include "cppjieba/Jieba.hpp"
 #include "ENTITY.h"
+#include "ReplacementSelectionSort.h"
 
 using namespace std;
 /**
  * @author AlexHoring
  * @brief 所有的功能函数都在这里编写
  */
-
 class Algos {
 public:
     /**
@@ -34,6 +34,14 @@ public:
      * @return none，可省略
      */
     static void sample_function(string sentence);
+
+    /**
+     * @author Hz
+     * @param q，指示要加入败者树的元素的位置
+     * @brief 用于调整败者树，从wa[q]起到败者树的根比较选择MINI记录，最终ls[0]为最小元素在工作区中的的位置
+     */
+    template<size_t Capacity>
+    static void SelectMin(LoserTree<Capacity> &loserTree,WorkAreaPlus<Capacity> &workAreaPlus, int q, int count);
     /**
      * @authors Hz,AlexHoring
      * @brief  list容器ListToDo依次存放有网页URL，网页标题，分别存放进csvStorageList中的每个CSVstorage,并创建临时索引与单词编号文件。
@@ -42,8 +50,8 @@ public:
      * @param dictionary 查询单词是否出现的容器
      * @param isChineseMode 是否中文模式的判断变量
      */
-    static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
-                               MapAVL<std::string, size_t> &dictionary, bool isChineseMode);
+    static size_t read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
+                                 MapAVL<std::string, size_t> &dictionary, bool isChineseMode);
 
     /**
      * @author AlexHoring
@@ -55,7 +63,7 @@ public:
      * @param content 网页正文
      * @param newsID 新闻网页的编号
      */
-    static void
+    static size_t
     write_to_file(ofstream &writeToTempIndex, ofstream &writeToWordNumber, MapAVL<std::string, size_t> &dict,
                   std::string &head, std::string &content, size_t newsID);
 
@@ -70,8 +78,8 @@ public:
      * @param content 网页正文
      * @param newsID 新闻网页的编号
      */
-    static void write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex, ofstream &writeToWordNumber,
-                                      MapAVL<std::string, size_t> &dict, string &head, string &content, size_t newsID);
+    static size_t write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex, ofstream &writeToWordNumber,
+                                        MapAVL<std::string, size_t> &dict, string &head, string &content, size_t newsID);
 
     /**
      * @author TL
@@ -181,9 +189,6 @@ public:
         }
     }
 
-
-
-
 private:
     /**
      * @author Hz
@@ -193,8 +198,23 @@ private:
      * @return
      */
     static bool start_with(std::string &str, const std::string &prefix) ;
-
 };
+
+
+template<size_t Capacity>
+void Algos::SelectMin(LoserTree<Capacity> &loserTree, WorkAreaPlus<Capacity> &workAreaPlus, int q, int count){
+    for(int t=(count+q)/2,p=loserTree[t];t>0;t=t/2,p=loserTree[t]){     //t为新加入节点的双亲节点的位置
+        if(workAreaPlus[p].key.first < workAreaPlus[q].key.first || (workAreaPlus[p].key.first == workAreaPlus[q].key.first) && (workAreaPlus[p].key.second) < workAreaPlus[q].key.second){
+            int temp=q;
+            q=loserTree[t];        //q始终存放胜者的位置
+            loserTree[t]=temp;
+        }               //段号小的或者短号相等但是关键字小的为胜者
+    }
+    loserTree[0]=q;    //loserTree[0]为最终胜者的位置，即最小值的位置
+}
+
+
+
 
 /**
      * @author TL
@@ -220,4 +240,7 @@ public:
         return *(first) > *(second);
     }
 };
+
+
+
 #endif //SEARCH101_ALGOS_H
