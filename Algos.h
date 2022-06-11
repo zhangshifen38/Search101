@@ -16,6 +16,7 @@
 #include "WordFilter.h"
 #include "MapAVL.h"
 #include "BinaryHeap.h"
+#include "cppjieba/Jieba.hpp"
 #include "ENTITY.h"
 
 using namespace std;
@@ -40,11 +41,14 @@ public:
      * @param csvStorageList:装有CSVstorage的list容器
      */
     static void read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
-                               MapAVL<std::string, size_t> &dictionary);
+                               MapAVL<std::string, size_t> &dictionary, bool isChineseMode);
 
     static void
-    write_to_temporary_index(ofstream &writeToTempIndex, MapAVL<std::string, size_t> &dict, std::string &head,
-                             std::string &content, size_t newsID);
+    write_to_file(ofstream &writeToTempIndex, ofstream &writeToWordNumber, MapAVL<std::string, size_t> &dict,
+                  std::string &head, std::string &content, size_t newsID);
+
+    static void write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex, ofstream &writeToWordNumber,
+                                      MapAVL<std::string, size_t> &dict, string &head, string &content, size_t newsID);
 
     /**
      * @author TL
