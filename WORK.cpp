@@ -70,16 +70,25 @@ int WORK::SEARCH() {
 
     list<string> listToDo;
     vector<CSVstorage> newsInfo;
-    CSVreader reader(NEWS_PATH);
     MapAVL<string ,size_t> dict;
 
+    bool isChineseMode;
+    char choice;
+    do{
+        cout<<"Please select language/请选择使用的语言:(0)English (1)中文（简体）"<<endl;
+        cin>>choice;
+        isChineseMode=(choice=='1');
+    }while(choice!='0'&&choice!='1');
+    cin.get();
+    cout<<"Your choice is "<<(isChineseMode?"中文（简体）":"English")<<endl;
+    CSVreader reader((isChineseMode?NEWS_CHINESE_PATH:NEWS_PATH));
     //读取CSV信息块
     while(!reader.end_of_file()){
         listToDo.push_back(reader.get_sentense());
     }
 
-    //读取新闻信息，并且生成词典与临时索引文件TemporaryIndex.dat
-    Algos::read_and_store(listToDo, newsInfo, dict);
+    //读取新闻信息，并且生成词典、单词编号以及临时索引文件TemporaryIndex.dat
+    Algos::read_and_store(listToDo, newsInfo, dict, isChineseMode);
 
 
     vector< pair< size_t,size_t > > tempIndex;
@@ -110,7 +119,6 @@ int WORK::SEARCH() {
         rc=wa[ls[0]].mergeNum;//设置下一个段的段号
     }
     //-------------------------------------------------------------置换选择排序生成归并段
-
     //-------------------------------------------------------------归并段多路归并为一个文件
     ofstream writeToFinalData;
     //写入最终索引文件FinalData.dat
