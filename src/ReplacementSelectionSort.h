@@ -99,8 +99,7 @@ private:
 template<size_t Capacity>
 void ReplacementSelectionSort<Capacity>::SelectMinMax(int q) {
     for(int t=(Capacity+q)/2,p=loserTree[t]; t > 0; t= t / 2, p=loserTree[t]){//t为新加入节点的双亲节点的位置
-        if(workArea[p].mergeNum < workArea[q].mergeNum ||
-          (workArea[p].mergeNum == workArea[q].mergeNum && workArea[p].key.first < workArea[q].key.first)){
+        if((workArea[p].mergeNum < workArea[q].mergeNum) || ((workArea[p].mergeNum == workArea[q].mergeNum) && (workArea[p].key.first < workArea[q].key.first))||((workArea[p].mergeNum == workArea[q].mergeNum) && (workArea[p].key.first==workArea[q].key.first)&&(workArea[p].key.second<workArea[q].key.second))){
             int temp=q;
             q=loserTree[t];//q始终存放胜者的位置
             loserTree[t]=temp;
@@ -138,7 +137,7 @@ void ReplacementSelectionSort<Capacity>::GetMergeSection(std::ifstream &fi, size
         //如果所有的数据记录都读取完，则没输出一个数据记录，就将该数据记录的段设置为虚段，表示结束，值设置为无限大
         else{
             fi >> workArea[q].key.first >> workArea[q].key.second;  //提取下一个数据记录
-            if(workArea[q].key.first < minimax.first){              //如果小于上一个筛选出的数据记录，则它属于下一段
+            if((workArea[q].key.first < minimax.first)||((workArea[q].key.first==minimax.first)&&(workArea[q].key.second<minimax.second))){              //如果小于上一个筛选出的数据记录，则它属于下一段
                 rmax=rc+1;
                 workArea[q].mergeNum=rmax;
             }
