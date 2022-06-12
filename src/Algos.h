@@ -96,6 +96,9 @@ public:
      */
     template<class _iterator>
     static void heap_sort(_iterator begin,_iterator end){
+        if(begin==end){
+            return;
+        }
         build_heap(begin,end);
         for(auto it = end - 1;it >= begin;it--){
             swap(*it ,*begin);
@@ -111,6 +114,9 @@ public:
      */
     template<class _iterator,typename _Compare>
     static void heap_sort(_iterator begin,_iterator end,_Compare compare){
+        if(begin==end){
+            return;
+        }
         build_heap(begin,end,compare);
         for(auto it = end - 1;it >= begin;it--){
             swap(*it ,*begin);

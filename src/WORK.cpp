@@ -41,6 +41,27 @@ int WORK::SEARCH() {
     isChineseMode = (choice == '1');
     cin.get();
     cout << "Your choice is " << (isChineseMode ? "中文（简体）." : "English.") << endl;
+    cout<<"Do you need to reload the pages information file? (y/n)"<<endl;
+    cin>>choice;
+    while (choice != 'y' && choice != 'n') {
+        cout << "Your choice is " << choice << ", which is invalid." << endl;
+        cout<<"Do you need to reload the pages information file? (y/n)"<<endl;
+        cin>>choice;
+    };
+    if(choice=='y'){
+        if(isChineseMode){
+            if(filesystem::exists(NEWS_CHINESE_PATH)){
+                filesystem::remove(NEWS_CHINESE_PATH);
+            }
+            system("python ../crawl_Chinese_news.py");
+        }else{
+            if(filesystem::exists(NEWS_PATH)){
+                filesystem::remove(NEWS_PATH);
+            }
+            system("python ../crawl_news.py");
+        }
+    }
+    cin.get();
 
     //阶段1：生成临时索引文件
     msTag=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
