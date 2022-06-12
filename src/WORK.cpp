@@ -150,15 +150,15 @@ int WORK::SEARCH() {
         ofstream writeInvertedIndex;
         readSortedItems.open("../initial/FinalData.dat");
         sio << blockNumber;
-        sio >> indexID;
+        sio >> indexID;         //用stringstream将数字转化为字符串
         writeInvertedIndex.open(INVERTED_INDEX_LIST_PATH + baseName + indexID + suffix, ios::out);
         size_t currentID = 0, inID, inPage;
         size_t currentBlockNum = 0;
-        pair<size_t, size_t> item;
+        pair<size_t, size_t> item;      //first存储新闻编号，second存储该单词在新闻中出现的次数
         vector<pair<size_t, size_t> > invItems;
         while (!readSortedItems.eof()) {
             readSortedItems >> inID >> inPage;
-            if (inID != currentID) {
+            if (inID != currentID) {    //单词ID不是当前ID：换下一个单词
                 invItems.push_back(item);
                 item = {inPage, 0};
                 writeInvertedIndex << currentID << ' ';
@@ -169,7 +169,7 @@ int WORK::SEARCH() {
                 currentID = inID;
                 invItems.clear();
                 ++currentBlockNum;
-                if (currentBlockNum == blockSize) {
+                if (currentBlockNum == blockSize) {     //如果达到了分块的大小，则写入下一个文件块
                     writeInvertedIndex.close();
                     writeInvertedIndex.clear(ios::goodbit);
                     ++blockNumber;
@@ -180,7 +180,7 @@ int WORK::SEARCH() {
                     currentBlockNum = 0;
                 }
             }
-            if (inPage != item.first) {
+            if (inPage != item.first) {     //页面ID不是当前ID：换下一条新闻
                 invItems.push_back(item);
                 item = {inPage, 0};
             }
@@ -189,7 +189,7 @@ int WORK::SEARCH() {
         invItems.push_back(item);
         writeInvertedIndex << currentID << ' ';
         for (auto &i: invItems) {
-            writeInvertedIndex << i.first << ' ' << i.second << ' ';
+            writeInvertedIndex << i.first << ' ' << i.second << ' ';    //写入文件
         }
         writeInvertedIndex << '\n';
         writeInvertedIndex.close();
@@ -202,7 +202,8 @@ int WORK::SEARCH() {
     cout << "\nInit successfully in total time "<<totalCost<<"s!\n\nType what you want to search: " << flush;
     string toSearch;
     getline(cin,toSearch);
-    SetAVL<string> keyList;
+    SetAVL<string> keyList;     //用户关键词整理
+    msTag=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
     if(isChineseMode){
         vector<string> tk;
         Algos::ChineseCutter.Cut(toSearch,tk);
@@ -218,7 +219,7 @@ int WORK::SEARCH() {
             keyList.insert(filter.get_word());
         }
     }
-    vector<string> numberOrder;
+    vector<string> numberOrder;     //关键词按照词典编号顺序排序
     for(auto& st:keyList){
         numberOrder.emplace_back(st);
     }
@@ -230,7 +231,7 @@ int WORK::SEARCH() {
         }
         return dict[a]<dict[b];
     });
-    BinaryHeap<PageEvaluate> searchResult;
+    BinaryHeap<PageEvaluate> searchResult;  //利用优先队列自动将搜索结果按照关键词覆盖面、关键词频率综合排序
     do{
         string temp;
         MapAVL<size_t ,pair<size_t ,size_t > > findPage;
@@ -268,6 +269,7 @@ int WORK::SEARCH() {
             searchResult.push(PageEvaluate(p.first,p.second.second,p.second.first));
         }
     }while(false);
+    msTagEnd=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
     cout<<"We found these:"<<'\n';
     while(!searchResult.empty()){
@@ -275,6 +277,7 @@ int WORK::SEARCH() {
         cout<<'\n';
         searchResult.pop();
     }
+    cout<<"within "<<((double)(msTagEnd.count()-msTag.count())/1000)<<'s'<<endl;
 
     return 0;
 }
