@@ -10,19 +10,15 @@ void Algos::sample_function(string sentence) {
 }
 
 size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
-                             MapAVL<std::string, size_t> &dictionary, bool isChineseMode) {
+                             MapAVL<std::string, size_t> &dictionary, SetAVL<string> &separatorSet,
+                             bool isChineseMode) {
     //extend by AlexHoring: 整合生成临时索引、单词编号的功能，返回临时索引文件中的项目数
     size_t itemNumber = 0;
     ofstream writeToTempIndex, writeToWordNumber;
     filesystem::create_directory(INITIAL_PATH); //创建initial路径
     writeToTempIndex.open(INITIAL_PATH + TEMP_INDEX_PATH, ios::out);    //打开临时索引存放文件
     writeToWordNumber.open(INITIAL_PATH + WORD_NUMBER_PATH, ios::out);  //打开单词编号存放文件
-    cppjieba::Jieba filter(
-            DICT_PATH,
-            HMM_PATH,
-            USER_DICT_PATH,
-            IDF_PATH,
-            STOP_WORD_PATH);    //中文分词工具类初始化
+
 
     string URL, head;
     int count = 0;//用来标志当前录入字符串是URL（3）还是标题（2）还是正文（1）
@@ -45,8 +41,8 @@ size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage
                 //直接将标题与新闻内容写入文件，返回写入临时索引的项目数
                 itemNumber += (
                         isChineseMode
-                        ? write_to_file_Chinese(filter, writeToTempIndex, writeToWordNumber, dictionary, head, item,
-                                                csvStorageList.size())
+                        ? write_to_file_Chinese(writeToTempIndex, writeToWordNumber, dictionary, head, item,
+                                                csvStorageList.size(),separatorSet)
                         : write_to_file(writeToTempIndex, writeToWordNumber, dictionary, head, item,
                                         csvStorageList.size())
                 );
@@ -86,13 +82,16 @@ size_t Algos::write_to_file(ofstream &writeToTempIndex, ofstream &writeToWordNum
 }
 
 size_t
-Algos::write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex, ofstream &writeToWordNumber,
-                             MapAVL<std::string, size_t> &dict, string &head, string &content, size_t newsID) {
+Algos::write_to_file_Chinese(ofstream &writeToTempIndex, ofstream &writeToWordNumber, MapAVL<std::string, size_t> &dict,
+                             string &head, string &content, size_t newsID, SetAVL<string> &separatorSet) {
     vector<std::string> words;
     size_t itemNumber = 0;
     //调用Jieba分词库对标题进行分词
-    filter.Cut(head, words);
+    ChineseCutter.Cut(head, words);
     for (auto &wordFromSentence: words) {
+        if(separatorSet.find(wordFromSentence)!=separatorSet.end()){
+            continue;
+        }
         if (dict.find(wordFromSentence) == dict.end()) {
             writeToWordNumber << wordFromSentence << ' ' << dict.size() << '\n';
             dict.insert({wordFromSentence, dict.size()});
@@ -102,8 +101,11 @@ Algos::write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex
     }
     words.clear();
     //对正文进行分词
-    filter.Cut(content, words);
+    ChineseCutter.Cut(content, words);
     for (auto &wordFromSentence: words) {
+        if(separatorSet.find(wordFromSentence)!=separatorSet.end()){
+            continue;
+        }
         if (dict.find(wordFromSentence) == dict.end()) {
             writeToWordNumber << wordFromSentence << ' ' << dict.size() << '\n';
             dict.insert({wordFromSentence, dict.size()});
@@ -113,5 +115,9 @@ Algos::write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex
     }
     return itemNumber;
 }
+
+cppjieba::Jieba Algos::ChineseCutter(DICT_PATH,HMM_PATH,USER_DICT_PATH,IDF_PATH,STOP_WORD_PATH);
+
+
 
 

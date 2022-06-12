@@ -141,7 +141,7 @@ template <
          size_t sz = container.size();
          swim_up(container.begin(), sz - 1, compare);
      }
-
+ private:
      /**
          * @author Trowood
          * @brief 上浮功能

@@ -9,8 +9,8 @@
 CSVstorage::CSVstorage(string &url, string &head): URL(url), head(head){}
 
 void CSVstorage::print() {
-    std::cout<<URL<<endl;
-    std::cout<<head<<endl;
+    std::cout<<URL<<'\n';
+    std::cout<<head<<'\n';
 }
 
 void CSVstorage::set_item(string url, string head) {

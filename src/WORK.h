@@ -11,6 +11,7 @@
 #include <utility>
 #include <fstream>
 #include <filesystem>
+#include <chrono>
 #include <sstream>
 #include "CSVreader.h"
 #include "CSVstorage.h"
@@ -24,11 +25,8 @@
 #include <utility>
 #include "ENTITY.h"
 #include "ReplacementSelectionSort.h"
+#include "PageEvaluate.h"
 //will be removed later
-#include <algorithm>
-#include <map>
-
-
 
 using namespace std;
 

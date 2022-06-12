@@ -19,6 +19,7 @@
 #include "cppjieba/Jieba.hpp"
 #include "ENTITY.h"
 #include "ReplacementSelectionSort.h"
+#include "SetAVL.h"
 
 using namespace std;
 /**
@@ -27,6 +28,8 @@ using namespace std;
  */
 class Algos {
 public:
+    //中文分词库的初始化较为耗时，因此设置为静态变量
+    static cppjieba::Jieba ChineseCutter;
     /**
      * @author AlexHoring
      * @brief 功能函数的编写示例：函数名前加static表静态，这里是定义，对应.cpp中写明实现。
@@ -51,7 +54,8 @@ public:
      * @param isChineseMode 是否中文模式的判断变量
      */
     static size_t read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
-                                 MapAVL<std::string, size_t> &dictionary, bool isChineseMode);
+                                 MapAVL<std::string, size_t> &dictionary, SetAVL<string> &separatorSet,
+                                 bool isChineseMode);
 
     /**
      * @author AlexHoring
@@ -70,7 +74,7 @@ public:
     /**
      * @author AlexHoring
      * @brief 写入中文的未排序临时索引文件与单词编号文件
-     * @param filter Jieba分词工具的对象实例
+     * @param ChineseCutter Jieba分词工具的对象实例
      * @param writeToTempIndex 指向临时索引文件的文件流
      * @param writeToWordNumber 指向单词编号文件的文件流
      * @param dict 记录单词是否出现的map对象
@@ -78,8 +82,9 @@ public:
      * @param content 网页正文
      * @param newsID 新闻网页的编号
      */
-    static size_t write_to_file_Chinese(cppjieba::Jieba &filter, ofstream &writeToTempIndex, ofstream &writeToWordNumber,
-                                        MapAVL<std::string, size_t> &dict, string &head, string &content, size_t newsID);
+    static size_t
+    write_to_file_Chinese(ofstream &writeToTempIndex, ofstream &writeToWordNumber, MapAVL<std::string, size_t> &dict,
+                          string &head, string &content, size_t newsID, SetAVL<string> &separatorSet);
 
     /**
      * @author TL
@@ -90,20 +95,47 @@ public:
      * @return none
      */
     template<class _iterator>
-    void heap_sort(_iterator begin,_iterator end){
+    static void heap_sort(_iterator begin,_iterator end){
         build_heap(begin,end);
         for(auto it = end - 1;it >= begin;it--){
             swap(*it ,*begin);
             Algos::heap_realign(begin,it,begin);
         }
     }
+
+    /**
+     * @author TL
+     * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
+     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，compare为一个自定义排序仿函数
+     * @return none
+     */
+    template<class _iterator,typename _Compare>
+    static void heap_sort(_iterator begin,_iterator end,_Compare compare){
+        build_heap(begin,end,compare);
+        for(auto it = end - 1;it >= begin;it--){
+            swap(*it ,*begin);
+            Algos::heap_realign(begin,it,begin,compare);
+        }
+    }
+
+
+
+private:
+    /**
+     * @author Hz
+     * @brief  工具，查找str字符串是否以prefix字符串开头
+     * @param str:被查找的字符串
+     * @param prefix:查找的开头
+     * @return true如果以prefix开头，否则false
+     */
+    static bool start_with(std::string &str, const std::string &prefix) ;
     /**
      * @author TL
      * @brief  build_heap实现构造大根堆，没有返回值。
      * @param begin 是传入的开始迭代器，end是传入时的迭代器
      */
     template<class _iterator>
-    void build_heap(_iterator begin,_iterator end){
+    static void build_heap(_iterator begin,_iterator end){
         int lastNode = end - begin - 1;
         int parent = (lastNode - 1)/2;
         auto tempBegin = begin + parent;
@@ -117,7 +149,7 @@ public:
      * @param begin 是传入的开始迭代器，end是传入时的迭代器
      */
     template<class _iterator>
-    void heap_realign(_iterator begin,_iterator end,_iterator parent){
+    static void heap_realign(_iterator begin,_iterator end,_iterator parent){
         if(parent >= end)
             return;
         int leftChild = (parent - begin)*2 + 1;
@@ -134,21 +166,6 @@ public:
             heap_realign(begin,end,begin + max);
         }
     }
-
-    /**
-     * @author TL
-     * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
-     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，compare为一个自定义排序仿函数
-     * @return none
-     */
-    template<class _iterator,typename _Compare>
-    void heap_sort(_iterator begin,_iterator end,_Compare compare){
-        build_heap(begin,end,compare);
-        for(auto it = end - 1;it >= begin;it--){
-            swap(*it ,*begin);
-            Algos::heap_realign(begin,it,begin,compare);
-        }
-    }
     /**
      * @author TL
      * @brief  build_heap建立一个堆，没有返回值。
@@ -156,7 +173,7 @@ public:
      * @return none
      */
     template<class _iterator,typename _Compare>
-    void build_heap(_iterator begin,_iterator end,_Compare compare){
+    static void build_heap(_iterator begin,_iterator end,_Compare compare){
         int lastNode = end - begin - 1;
         int parent = (lastNode - 1)/2;
         auto tempBegin = begin + parent;
@@ -171,16 +188,16 @@ public:
      * @return none
      */
     template<class _iterator,typename _Compare>
-    void heap_realign(_iterator begin,_iterator end,_iterator parent,_Compare compare){
+    static void heap_realign(_iterator begin,_iterator end,_iterator parent,_Compare compare){
         if(parent >= end)
             return;
         int leftChild = (parent - begin)*2 + 1;
         int rightChild = (parent - begin)*2 +2;
         int max = parent - begin;
-        if((leftChild < (end - begin)) && compare((begin + max),(begin + leftChild))){
+        if((leftChild < (end - begin)) && compare(*(begin + max),*(begin + leftChild))){
             max = leftChild;
         }
-        if((rightChild < (end - begin)) && compare((begin + max),(begin + rightChild))){
+        if((rightChild < (end - begin)) && compare(*(begin + max),*(begin + rightChild))){
             max = rightChild;
         }
         if(max != parent - begin){
@@ -188,16 +205,6 @@ public:
             heap_realign(begin,end,begin + max,compare);
         }
     }
-
-private:
-    /**
-     * @author Hz
-     * @brief  工具，查找str字符串是否以prefix字符串开头
-     * @param str:被查找的字符串
-     * @param prefix:查找的开头
-     * @return
-     */
-    static bool start_with(std::string &str, const std::string &prefix) ;
 };
 
 
@@ -212,34 +219,6 @@ void Algos::SelectMin(LoserTree<Capacity> &loserTree, WorkAreaPlus<Capacity> &wo
     }
     loserTree[0]=q;    //loserTree[0]为最终胜者的位置，即最小值的位置
 }
-
-
-
-
-/**
-     * @author TL
-     * @brief  lessCompare定义一个小于号的仿函数，
-     * @param 重构括号，括号里的第一个first为比较的第一个迭代器，第二个second为比较的第二个迭代器
-     */
-class lessCompare {
-public:
-    template<typename _iterator>
-    bool operator()(_iterator first, _iterator second) {
-        return *(first) < *(second);
-    }
-};
-/**
-     * @author TL
-     * @brief  lessCompare定义一个大于号的仿函数，
-     * @param 重构括号，括号里的第一个first为比较的第一个迭代器，第二个second为比较的第二个迭代器
-     */
-class greaterCompare {
-public:
-    template<typename _iterator>
-    bool operator()(_iterator first, _iterator second) {
-        return *(first) > *(second);
-    }
-};
 
 
 
