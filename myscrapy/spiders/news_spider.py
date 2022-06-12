@@ -1,11 +1,5 @@
 import scrapy
-from  myscrapy.items import MyscrapyItem
-from bs4 import *
-from scrapy.spiders import CrawlSpider,Rule
-from scrapy.linkextractors.lxmlhtml import LxmlLinkExtractor
 
-
-#
 class NewsSpiderCHN(scrapy.Spider):
     name = "newsChinese"
 

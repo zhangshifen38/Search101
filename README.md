@@ -27,6 +27,14 @@
 2. 弹出窗口，点击1-registry
 3. 将第一个run.processes.with.pty选项的勾去掉
 
+2022.6.13 更新
+
+加入了Python爬虫的支持,使用的是scrapy库。若需要正常使用，则需要先安装依赖环境。安装方法为：
+
+```
+pip install scrapy
+```
+
 #### 参与贡献
 
 1.  Fork 本仓库
