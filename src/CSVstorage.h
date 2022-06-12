@@ -23,17 +23,15 @@ public:
      * @brief 带参构造函数
      * @param url :网页项目的URL
      * @param head :网页项目的标题
-     * @param content :网页项目的内容
      */
-    CSVstorage(string &url, string &head, string &content);
+    CSVstorage(string &url, string &head);
     /**
      * @author AlexHoring
      * @brief 设置网页信息类的内容
      * @param url :网页项目的URL
      * @param head :网页项目的标题
-     * @param content :网页项目的内容
      */
-    void set_item(string url,string head,string content);
+    void set_item(string url,string head);
     /**
      * @author Hz
      * @brief 测试用，打印URL，标题和正文
@@ -41,7 +39,6 @@ public:
     void print();
     string URL;     //网页URL
     string head;    //网页标题
-    string content; //网页正文
 };
 
 

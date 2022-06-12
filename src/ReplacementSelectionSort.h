@@ -99,7 +99,8 @@ private:
 template<size_t Capacity>
 void ReplacementSelectionSort<Capacity>::SelectMinMax(int q) {
     for(int t=(Capacity+q)/2,p=loserTree[t]; t > 0; t= t / 2, p=loserTree[t]){//t为新加入节点的双亲节点的位置
-        if(workArea[p].mergeNum < workArea[q].mergeNum || (workArea[p].mergeNum == workArea[q].mergeNum) && (workArea[p].key.first) < workArea[q].key.first){
+        if(workArea[p].mergeNum < workArea[q].mergeNum ||
+          (workArea[p].mergeNum == workArea[q].mergeNum && workArea[p].key.first < workArea[q].key.first)){
             int temp=q;
             q=loserTree[t];//q始终存放胜者的位置
             loserTree[t]=temp;

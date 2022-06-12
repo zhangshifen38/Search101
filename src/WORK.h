@@ -7,9 +7,11 @@
 
 #include <iostream>
 #include <list>
+#include <cmath>
 #include <utility>
 #include <fstream>
 #include <filesystem>
+#include <sstream>
 #include "CSVreader.h"
 #include "CSVstorage.h"
 #include "Algos.h"

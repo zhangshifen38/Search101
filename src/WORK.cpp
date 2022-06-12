@@ -15,6 +15,7 @@ int WORK::SEARCH() {
     MapAVL<string ,size_t> dict;
 
     bool isChineseMode;
+
     char choice;
     cout<<"Please select language / 请选择使用的语言: 0-English 1-中文（简体）"<<endl;
     choice=cin.get();
@@ -36,6 +37,7 @@ int WORK::SEARCH() {
     char str[20];
     size_t count = 1;//记录段号
 
+    //局部变量缩小作用域
     do {
         //Hz:置换选择排序生成归并段
         filesystem::create_directory(INITIAL_PATH + MERGE_SEGMENT_PATH);     //创建存放归并段文件的文件夹
@@ -79,13 +81,13 @@ int WORK::SEARCH() {
             Algos::SelectMin(*CMPArray, *dataMess, i - 1, count - 1);
         }
         int countTotality = 0;
-        while ((*dataMess)[(*CMPArray)[0]].key.first != 99999) {
+        while ((*dataMess)[(*CMPArray)[0]].key.first != 99999999) {
             int q = (*CMPArray)[0];
             KeyType mini = (*dataMess)[q].key;
             writeToFinalData << mini.first << ' ' << mini.second << endl;
             countTotality++;
             if ((*dataMess)[q].filePoint.peek() == EOF) {
-                (*dataMess)[q].key.first = (*dataMess)[q].key.second = 99999;
+                (*dataMess)[q].key.first = (*dataMess)[q].key.second = 99999999;
             }//读完文件将其数值置为数值上界
             else {
                 (*dataMess)[q].filePoint >> (*dataMess)[q].key.first >> (*dataMess)[q].key.second; //提取下一个数据记录
@@ -102,6 +104,22 @@ int WORK::SEARCH() {
         dataMess = nullptr;
     }while(false);
 
+//    size_t blockSize= sqrt(numOfData);
+//    do{
+//        string baseName="InvertedIndex_";
+//        string suffix=".dat";
+//        string indexID;
+//        stringstream sio;
+//        filesystem::create_directory(INVERTED_INDEX_LIST_PATH);
+//        ifstream readSortedItems;
+//        ofstream writeInvertedIndex;
+//        readSortedItems.open("../initial/FinalData.dat");
+//        size_t segNumber=0;
+//        while(!readSortedItems.eof()){
+//            ;
+//        }
+//
+//    }while(false);
 
     return 0;
 }

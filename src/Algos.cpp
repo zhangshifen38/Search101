@@ -24,7 +24,7 @@ size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage
             IDF_PATH,
             STOP_WORD_PATH);    //中文分词工具类初始化
 
-    string URL, head, content;
+    string URL, head;
     int count = 0;//用来标志当前录入字符串是URL（3）还是标题（2）还是正文（1）
     std::string http = "http";
     for (auto item: listToDo) {
@@ -41,7 +41,6 @@ size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage
                 count--;
                 break;
             case 1:
-                //content=item;
                 count--;
                 //直接将标题与新闻内容写入文件，返回写入临时索引的项目数
                 itemNumber += (
@@ -52,7 +51,7 @@ size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage
                                         csvStorageList.size())
                 );
                 //新闻存储类就不需要“正文内容”这个条目了。
-                csvStorageList.emplace_back(CSVstorage(URL, head, content));
+                csvStorageList.emplace_back(CSVstorage(URL, head));
                 break;
         }
     }
