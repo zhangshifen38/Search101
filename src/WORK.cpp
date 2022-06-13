@@ -303,7 +303,7 @@ int WORK::SEARCH() {
             searchResult.pop();
         }
         cout << "within " << ((double) (msTagEnd.count() - msTag.count()) / 1000) << 's' << endl;
-        cout<<"Type what you want to search: (Ctrl+Z to exit)" << flush;
+        cout<<"Type what you want to search (Ctrl+D to exit): " << flush;
     }
 
     return 0;

@@ -24,6 +24,6 @@ const std::string IDF_PATH = "../dict/idf.utf8";
 const std::string STOP_WORD_PATH = "../dict/stop_words.utf8";
 const std::string IGNORE_WORD_PATH = "../dict/ignore.word.utf8";
 
-const size_t CAPACITY=10000;
+const size_t CAPACITY=50000;
 
 #endif //SEARCH101_ENTITY_H
