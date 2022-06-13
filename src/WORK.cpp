@@ -58,7 +58,7 @@ int WORK::SEARCH() {
             if(filesystem::exists(NEWS_PATH)){
                 filesystem::remove(NEWS_PATH);
             }
-            system("python ../crawl_news.py");
+            system("python ../crawl_English_news.py");
         }
     }
     cin.get();
@@ -220,85 +220,91 @@ int WORK::SEARCH() {
     cout<<"[info] Success in "<<((double)(msTagEnd.count()-msTag.count())/1000)<<"s\n";
     totalCost+=((double)(msTagEnd.count()-msTag.count())/1000);
 
-    cout << "\nInit successfully in total time "<<totalCost<<"s!\n\nType what you want to search: " << flush;
+    cout << "\nInit successfully in total time "<<totalCost<<"s!\n\n";
+    cout<<"Type what you want to search (Ctrl+D to exit): " << flush;
     string toSearch;
-    getline(cin,toSearch);
-    SetAVL<string> keyList;     //用户关键词整理
-    msTag=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-    if(isChineseMode){
-        vector<string> tk;
-        Algos::ChineseCutter.Cut(toSearch,tk);
-        for(string& st:tk){
-            if(separatorSet.find(st)==separatorSet.end()){
-                keyList.insert(st);
-            }
-        }
-    }else{
-        WordFilter filter;
-        filter.set_sentence(std::move(toSearch));
-        while (!filter.end_of_sentence()){
-            keyList.insert(filter.get_word());
-        }
-    }
-    vector<string> numberOrder;     //关键词按照词典编号顺序排序
-    for(auto& st:keyList){
-        numberOrder.emplace_back(st);
-    }
-    Algos::heap_sort(numberOrder.begin(),numberOrder.end(),[&dict](string &a,string &b)->bool {
-        if(dict.find(a)==dict.end()){
-            return false;
-        }else if(dict.find(b)==dict.end()){
-            return true;
-        }
-        return dict[a]<dict[b];
-    });
-    BinaryHeap<PageEvaluate> searchResult;  //利用优先队列自动将搜索结果按照关键词覆盖面、关键词频率综合排序
-    do{
-        string temp;
-        MapAVL<size_t ,pair<size_t ,size_t > > findPage;
-        ifstream readInvertedIndex;
-        size_t curBlock,curIndex=0,pID,pCount,pIndex;
-        readInvertedIndex.open(INVERTED_INDEX_LIST_PATH+baseName+"0"+suffix,ios::in);
-        for(string &st:numberOrder){
-            if(dict.find(st)==dict.end()){
-                break;
-            }
-            size_t id=dict[st];
-            if(id/blockSize!=curIndex){
-                curIndex=id/blockSize;
-                readInvertedIndex.close();
-                readInvertedIndex.clear(ios::goodbit);
-                sio.clear(ios::goodbit);
-                sio<<curIndex;
-                sio>>indexID;
-                readInvertedIndex.open(INVERTED_INDEX_LIST_PATH+baseName+indexID+suffix,ios::in);
-            }
-            while(readInvertedIndex>>pIndex,pIndex!=id){
-                getline(readInvertedIndex,temp);
-            }
-            sio.clear(ios::goodbit);
-            getline(readInvertedIndex,temp);
-            sio<<temp;
-            while(!sio.eof()){
-                sio>>pID>>pCount;
-                findPage[pID].first++;
-                findPage[pID].second+=pCount;
-            }
-        }
-        readInvertedIndex.close();
-        for(auto p:findPage){
-            searchResult.push(PageEvaluate(p.first,p.second.second,p.second.first));
-        }
-    }while(false);
-    msTagEnd=std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
 
-    cout<<"We found these:"<<'\n';
-    while(!searchResult.empty()){
-        newsInfo[searchResult.top().newsID].print();
-        cout<<'\n';
-        searchResult.pop();
+    while(getline(cin,toSearch)) {
+        SetAVL<string> keyList;     //用户关键词整理
+        msTag = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch());
+        if (isChineseMode) {
+            vector<string> tk;
+            Algos::ChineseCutter.Cut(toSearch, tk);
+            for (string &st: tk) {
+                if (separatorSet.find(st) == separatorSet.end()) {
+                    keyList.insert(st);
+                }
+            }
+        } else {
+            WordFilter filter;
+            filter.set_sentence(std::move(toSearch));
+            while (!filter.end_of_sentence()) {
+                keyList.insert(filter.get_word());
+            }
+        }
+        vector<string> numberOrder;     //关键词按照词典编号顺序排序
+        for (auto &st: keyList) {
+            numberOrder.emplace_back(st);
+        }
+        Algos::heap_sort(numberOrder.begin(), numberOrder.end(), [&dict](string &a, string &b) -> bool {
+            if (dict.find(a) == dict.end()) {
+                return false;
+            } else if (dict.find(b) == dict.end()) {
+                return true;
+            }
+            return dict[a] < dict[b];
+        });
+        BinaryHeap<PageEvaluate> searchResult;  //利用优先队列自动将搜索结果按照关键词覆盖面、关键词频率综合排序
+        do {
+            string temp;
+            MapAVL<size_t, pair<size_t, size_t> > findPage;
+            ifstream readInvertedIndex;
+            size_t curBlock, curIndex = 0, pID, pCount, pIndex;
+            readInvertedIndex.open(INVERTED_INDEX_LIST_PATH + baseName + "0" + suffix, ios::in);
+            for (string &st: numberOrder) {
+                if (dict.find(st) == dict.end()) {
+                    break;
+                }
+                size_t id = dict[st];
+                if (id / blockSize != curIndex) {
+                    curIndex = id / blockSize;
+                    readInvertedIndex.close();
+                    readInvertedIndex.clear(ios::goodbit);
+                    sio.clear(ios::goodbit);
+                    sio << curIndex;
+                    sio >> indexID;
+                    readInvertedIndex.open(INVERTED_INDEX_LIST_PATH + baseName + indexID + suffix, ios::in);
+                }
+                while (readInvertedIndex >> pIndex, pIndex != id) {
+                    getline(readInvertedIndex, temp);
+                }
+                sio.clear(ios::goodbit);
+                getline(readInvertedIndex, temp);
+                sio << temp;
+                while (!sio.eof()) {
+                    sio >> pID >> pCount;
+                    findPage[pID].first++;
+                    findPage[pID].second += pCount;
+                }
+            }
+            readInvertedIndex.close();
+            for (auto p: findPage) {
+                searchResult.push(PageEvaluate(p.first, p.second.second, p.second.first));
+            }
+        } while (false);
+        msTagEnd = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::system_clock::now().time_since_epoch());
+
+        cout << "We found these:" << '\n';
+        while (!searchResult.empty()) {
+            newsInfo[searchResult.top().newsID].print();
+            cout << '\n';
+            searchResult.pop();
+        }
+        cout << "within " << ((double) (msTagEnd.count() - msTag.count()) / 1000) << 's' << endl;
+        cout<<"Type what you want to search: (Ctrl+Z to exit)" << flush;
     }
-    cout<<"within "<<((double)(msTagEnd.count()-msTag.count())/1000)<<'s'<<endl;
 
     return 0;
 }
