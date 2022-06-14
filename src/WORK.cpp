@@ -131,16 +131,16 @@ int WORK::SEARCH() {
             Algos::SelectMin(*CMPArray, *dataMess, i - 1, count - 1);
         }
         int countTotality = 0;
-        while ((*dataMess)[(*CMPArray)[0]].key.first != 99999999) {
+        while ((*dataMess)[(*CMPArray)[0]].key.first != 999999999) {     //当最小值不是设定的最大数时
             int q = (*CMPArray)[0];
             KeyType mini = (*dataMess)[q].key;
             writeToFinalData << mini.first << ' ' << mini.second << endl;
             countTotality++;
             if ((*dataMess)[q].filePoint.peek() == EOF) {
-                (*dataMess)[q].key.first = (*dataMess)[q].key.second = 99999999;
-            }//读完文件将其数值置为数值上界
+                (*dataMess)[q].key.first = (*dataMess)[q].key.second = 999999999;
+            }           //读完文件将其数值置为数值上界
             else {
-                (*dataMess)[q].filePoint >> (*dataMess)[q].key.first >> (*dataMess)[q].key.second; //提取下一个数据记录
+                (*dataMess)[q].filePoint >> (*dataMess)[q].key.first >> (*dataMess)[q].key.second;  //提取下一个数据记录
             }
             Algos::SelectMin(*CMPArray, *dataMess, q, count - 1);
         }
@@ -228,6 +228,7 @@ int WORK::SEARCH() {
         SetAVL<string> keyList;     //用户关键词整理
         msTag = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch());
+        //根据先前选择的语言进行分词模块调用
         if (isChineseMode) {
             vector<string> tk;
             Algos::ChineseCutter.Cut(toSearch, tk);
@@ -287,15 +288,14 @@ int WORK::SEARCH() {
                     findPage[pID].first++;
                     findPage[pID].second += pCount;
                 }
-            }
+            }       //对每一个单词查找网页
             readInvertedIndex.close();
-            for (auto p: findPage) {
+            for (auto p: findPage) {        //加入优先队列
                 searchResult.push(PageEvaluate(p.first, p.second.second, p.second.first));
             }
         } while (false);
         msTagEnd = std::chrono::duration_cast<std::chrono::milliseconds>(
                 std::chrono::system_clock::now().time_since_epoch());
-
         cout << "We found these:" << '\n';
         while (!searchResult.empty()) {
             newsInfo[searchResult.top().newsID].print();

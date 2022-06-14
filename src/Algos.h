@@ -108,9 +108,10 @@ public:
 
     /**
      * @author TL
-     * @brief  heap_sort实现一个堆排序，直接排好序，没有返回值。
-     * @param begin可以理解为头部迭代器，end可以理解为尾部迭代器，compare为一个自定义排序仿函数
-     * @return none
+     * @brief  heap_sort实现一个堆排序，直接排好序。
+     * @param begin 头部迭代器
+     * @param end 尾部迭代器
+     * @param compare 一个自定义排序仿函数
      */
     template<class _iterator,typename _Compare>
     static void heap_sort(_iterator begin,_iterator end,_Compare compare){

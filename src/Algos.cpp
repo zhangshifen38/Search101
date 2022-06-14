@@ -46,7 +46,6 @@ size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage
                         : write_to_file(writeToTempIndex, writeToWordNumber, dictionary, head, item,
                                         csvStorageList.size())
                 );
-                //新闻存储类就不需要“正文内容”这个条目了。
                 csvStorageList.emplace_back(CSVstorage(URL, head));
                 break;
         }
