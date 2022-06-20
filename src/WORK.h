@@ -26,15 +26,10 @@
 #include "ENTITY.h"
 #include "ReplacementSelectionSort.h"
 #include "PageEvaluate.h"
-//will be removed later
+
 
 using namespace std;
 
-//typedef struct{
-//    RedType rec;//记录
-//    KeyType key;//关键字
-//    ifstream filePoint;//所属归并段的文件号
-//}WorkAreaPlus[CAPACITY];//数据节点和用于得到归并段的工作区
 
 /**
  * @author AlexHoring

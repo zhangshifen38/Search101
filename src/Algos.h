@@ -30,13 +30,6 @@ class Algos {
 public:
     //中文分词库的初始化较为耗时，因此设置为静态变量
     static cppjieba::Jieba ChineseCutter;
-    /**
-     * @author AlexHoring
-     * @brief 功能函数的编写示例：函数名前加static表静态，这里是定义，对应.cpp中写明实现。
-     * @param sentence:示例函数的输出
-     * @return none，可省略
-     */
-    static void sample_function(string sentence);
 
     /**
      * @author Hz

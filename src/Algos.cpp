@@ -5,9 +5,7 @@
 #include "Algos.h"
 
 
-void Algos::sample_function(string sentence) {
-    std::cout << "Sample sentence: " << sentence << std::endl;
-}
+
 
 size_t Algos::read_and_store(std::list<string> &listToDo, std::vector<CSVstorage> &csvStorageList,
                              MapAVL<std::string, size_t> &dictionary, SetAVL<string> &separatorSet,
@@ -115,7 +113,12 @@ Algos::write_to_file_Chinese(ofstream &writeToTempIndex, ofstream &writeToWordNu
     return itemNumber;
 }
 
-cppjieba::Jieba Algos::ChineseCutter(DICT_PATH,HMM_PATH,USER_DICT_PATH,IDF_PATH,STOP_WORD_PATH);
+cppjieba::Jieba Algos::ChineseCutter(
+        DICT_PATH,
+        HMM_PATH,
+        USER_DICT_PATH,
+        IDF_PATH,
+        STOP_WORD_PATH);
 
 
 

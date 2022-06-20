@@ -10,18 +10,6 @@
 #include <fstream>
 
 const int MAXIUM=-1;     //无穷大
-/*
-
-#define CAPACITY 10000  //内存工作区可容纳的记录个数
-#define NUM_Of_DATA 1588528 //文件中的记录数量
-#define numBound 99999 //文件中的记录数量
-
-typedef struct{
-    RedType rec;//记录
-    KeyType key;//关键字
-    ifstream filePoint;//所属归并段的文件号
-}WorkAreaPlus[CAPACITY];//数据节点和用于得到归并段的工作区
- */
 
 //用于选取最小值的败者树的非终端节点，里面的值是某节点在工作区中的位置序号，[0]位置是胜者
 template<size_t Capacity>
@@ -30,21 +18,15 @@ using LoserTree = std::array<int,Capacity>;
 //定义关键字类型为整形,first存单词ID，second存新闻编号
 typedef std::pair<int,int> KeyType;
 
-//数据记录项
-//struct RedType{
-//    KeyType key;    //关键字项
-//};
 
 //数据节点
 struct RedNode{
-    //RedType rec;    //记录
     KeyType key;    //关键字
     int mergeNum;   //所属归并段的段号
 };
 
 //数据节点
 struct RedNodePlus{
-    //RedType rec;//记录
     KeyType key;//关键字
     std::ifstream filePoint;//所属归并段的文件号
 };
@@ -88,7 +70,7 @@ public:
      */
     void GetMergeSection(std::ifstream &fi, size_t &counts, int rc, int &rmax, std::ofstream &fo);
 
-    int get_next_segment_number();
+    int nextSegNumber();
 
 private:
     LoserTree<Capacity> loserTree;
@@ -153,7 +135,7 @@ template<size_t Capacity>
 ReplacementSelectionSort<Capacity>::ReplacementSelectionSort(size_t numOfData):numOfData(numOfData){}
 
 template<size_t Capacity>
-int ReplacementSelectionSort<Capacity>::get_next_segment_number() {
+int ReplacementSelectionSort<Capacity>::nextSegNumber() {
     return workArea[loserTree[0]].mergeNum;
 }
 

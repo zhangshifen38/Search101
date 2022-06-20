@@ -105,7 +105,7 @@ int WORK::SEARCH() {
                 sprintf(str, "../initial/data/data%d.dat", count);
                 out.open(str);
             }//防止生成多余的一个空文件
-            rc = sortRS->get_next_segment_number();      //设置下一个段的段号
+            rc = sortRS->nextSegNumber();      //设置下一个段的段号
         }
         delete sortRS;
         sortRS = nullptr;

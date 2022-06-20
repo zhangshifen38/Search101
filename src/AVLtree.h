@@ -190,26 +190,6 @@ public:
      */
     size_t size();
 
-    //临时函数，将被删除
-    void print() {
-        AVLnodeType cur;
-        std::queue<AVLnodeType> que;
-        que.push(this->root);
-        while (que.size()) {
-            cur = que.front();
-            que.pop();
-            if (cur->leftChild != nullptr) {
-                std::cout << *(cur->leftChild->data) << ' ' << *(cur->leftChild->father->data) << std::endl;
-                que.push(cur->leftChild);
-            }
-            if (cur->rightChild != nullptr) {
-                std::cout << *(cur->rightChild->data) << ' ' << *(cur->rightChild->father->data) << std::endl;
-                que.push(cur->rightChild);
-            }
-        }
-        std::cout << std::endl;
-    }
-
 protected:
     AVLnode<Type> root;
     Compare compare;
